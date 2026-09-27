@@ -5,8 +5,7 @@
   "description": "Altyazılardaki kelime ve cümleleri Gemini ile derinlemesine analiz eder.",
   "permissions": [
     "sidePanel",
-    "storage",
-    "tabs"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
