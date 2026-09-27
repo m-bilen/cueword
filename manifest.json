@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Sub Context Analyzer v2",
+  "version": "1.0",
+  "description": "Altyazılardaki kelime ve cümleleri Gemini ile derinlemesine analiz eder.",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "all_frames": true,
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Analiz Panelini Aç"
+  }
+}
