@@ -1,7 +1,13 @@
 // Sayfanın en tepesine boş bir dinamik CSS katmanı açıyoruz
 let isAltHeld = false;
+
 const dynamicStyle = document.createElement('style');
 document.documentElement.appendChild(dynamicStyle);
+
+function disableSelectMode(){
+    dynamicStyle.innerHTML = '';
+    isAltHeld = false;
+}
 
 // 1. ALT tuşuna basıldığı an sitenin koruma kalkanını indiriyoruz
 window.addEventListener('keydown', (e) => {
@@ -26,11 +32,11 @@ window.addEventListener('keydown', (e) => {
 // 2. ALT tuşu bırakıldığı an siteyi anında orijinal ayarlarına döndürüyoruz
 window.addEventListener('keyup', (e) => {
     if (e.key === 'Alt') {
-        isAltHeld = false;
-        dynamicStyle.innerHTML = '';
+        disableSelectMode();
     }
 }, true);
 
+window.addEventListener('blur', disableSelectMode);
 // 3. Seçim tamamlandığında metni güvenli bir şekilde havada kapıyoruz
 window.addEventListener('mouseup', (e) => {
     if (!e.altKey) return; // Alt tuşuna basılı değilse site normal çalışsın
@@ -55,4 +61,5 @@ window.addEventListener('pointerdown', blockPageMouseEvents, true);
 
 window.addEventListener('selectstart', blockPageMouseEvents,true);
 
-window.addEventListener('click', blockPageMouseEvents, true)
+window.addEventListener('click', blockPageMouseEvents, true);
+
