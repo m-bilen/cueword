@@ -10,17 +10,8 @@ async function loadThreads() {
     try {
         const res = await fetch(`${BACKEND_URL}/threads`);
         const threads = await res.json();
-        threadList.innerHTML = '';
-        
-        threads.forEach(thread => {
-            const li = document.createElement('li');
-            li.className = 'history-item';
-            if (activeThreadId === thread.id) li.classList.add('active');
-            li.innerText = thread.title;
-            li.addEventListener('click', () => selectThread(thread.id));
-            threadList.appendChild(li);
-        });
-
+       
+        renderThreads(threads);
         // Hiç başlık yoksa otomatik bir tane aç
         if (threads.length === 0) {
             createNewThread("Genel Oturum");
@@ -57,15 +48,7 @@ async function selectThread(threadId) {
 
 function loadThreadsWithoutReset() {
     fetch(`${BACKEND_URL}/threads`).then(res => res.json()).then(threads => {
-        threadList.innerHTML = '';
-        threads.forEach(thread => {
-            const li = document.createElement('li');
-            li.className = 'history-item';
-            if (activeThreadId === thread.id) li.classList.add('active');
-            li.innerText = thread.title;
-            li.addEventListener('click', () => selectThread(thread.id));
-            threadList.appendChild(li);
-        });
+        renderThreads(threads);
     });
 }
 
@@ -149,6 +132,19 @@ async function analyzeText(text) {
         const loader = document.getElementById('loading-bubble');
         if (loader) loader.innerHTML = `<div class="chat-word">Hata</div><div class="chat-analysis">Motor bağlantısı koptu.</div>`;
     }
+}
+
+function renderThreads(threads){
+    threadList.innerHTML = '';
+    threads.forEach(thread =>{
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        if(activeThreadId === thread.id) li.classList.add ('active');
+        li.innerText = thread.title;
+        li.addEventListener('click' , () => selectThread(thread.id));
+        threadList.appendChild(li);
+
+    });
 }
 
 loadThreads();
