@@ -1,4 +1,4 @@
-// Sayfanın en tepesine boş bir dinamik CSS katmanı açıyoruz
+
 let isAltHeld = false;
 
 const dynamicStyle = document.createElement('style');
@@ -9,7 +9,7 @@ function disableSelectMode(){
     isAltHeld = false;
 }
 
-// 1. ALT tuşuna basıldığı an sitenin koruma kalkanını indiriyoruz
+
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Alt') {
         isAltHeld = true;
@@ -29,7 +29,7 @@ window.addEventListener('keydown', (e) => {
     }
 }, true);
 
-// 2. ALT tuşu bırakıldığı an siteyi anında orijinal ayarlarına döndürüyoruz
+
 window.addEventListener('keyup', (e) => {
     if (e.key === 'Alt') {
         disableSelectMode();
@@ -37,16 +37,17 @@ window.addEventListener('keyup', (e) => {
 }, true);
 
 window.addEventListener('blur', disableSelectMode);
-// 3. Seçim tamamlandığında metni güvenli bir şekilde havada kapıyoruz
-window.addEventListener('mouseup', (e) => {
-    if (!e.altKey) return; // Alt tuşuna basılı değilse site normal çalışsın
 
-    // HATA VEREN YERİ BURADA GÜVENLİ HALE GETİRİYORUZ
+window.addEventListener('mouseup', (e) => {
+    if (!e.altKey) return; 
+
+    
     let selection = window.getSelection();
     let selectedText = selection ? selection.toString().trim() : "";
 
-    // Eğer temizlenmiş metin gerçekten varsa ve boş değilse yan panele fırlat
+  
     if (selectedText.length > 0 && selectedText.length < 300) {
+        if (!chrome.runtime?.id) return;
         chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: selectedText });
     }
 }, true);
