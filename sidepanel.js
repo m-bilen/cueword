@@ -4,12 +4,14 @@ const newThreadBtn = document.getElementById('newThreadBtn');
 const BACKEND_URL = 'http://localhost:3000/api';
 
 let activeThreadId = null;
+let allThreads = [];
 
 // 1. Sol taraftaki başlıkları veritabanından yükle
 async function loadThreads() {
     try {
         const res = await fetch(`${BACKEND_URL}/threads`);
         const threads = await res.json();
+        allThreads = threads;
        
         renderThreads(threads);
         // Hiç başlık yoksa otomatik bir tane aç
@@ -42,15 +44,10 @@ async function selectThread(threadId) {
         }
         
         // Aktif başlığı sidebar'da işaretle
-        loadThreadsWithoutReset();
+        renderThreads(allThreads);
     } catch (err) { console.error("Kelimeler çekilemedi", err); }
 }
 
-function loadThreadsWithoutReset() {
-    fetch(`${BACKEND_URL}/threads`).then(res => res.json()).then(threads => {
-        renderThreads(threads);
-    });
-}
 
 // 3. Manuel Yeni Başlık Açma Butonu
 newThreadBtn.addEventListener('click', () => {
