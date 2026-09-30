@@ -1,3 +1,4 @@
+import { getThreads, createThread} from './storage.js';
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
 const newThreadBtn = document.getElementById('newThreadBtn');
@@ -9,8 +10,7 @@ let allThreads = [];
 // 1. Sol taraftaki başlıkları veritabanından yükle
 async function loadThreads() {
     try {
-        const res = await fetch(`${BACKEND_URL}/threads`);
-        const threads = await res.json();
+        const threads = await getThreads();
         allThreads = threads;
        
         renderThreads(threads);
@@ -59,12 +59,7 @@ newThreadBtn.addEventListener('click', () => {
 
 async function createNewThread(title) {
     try {
-        const res = await fetch(`${BACKEND_URL}/threads`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title })
-        });
-        const newThread = await res.json();
+        const newThread = await createThread(title)
         activeThreadId = newThread.id;
         await loadThreads();
         selectThread(newThread.id);
