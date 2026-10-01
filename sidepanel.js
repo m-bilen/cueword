@@ -1,4 +1,5 @@
 import { getThreads, createThread, getWords, addWord} from './storage.js';
+import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
 const newThreadBtn = document.getElementById('newThreadBtn');
@@ -107,19 +108,13 @@ async function analyzeText(text) {
     scrollToBottom();
 
     try {
-        const res = await fetch(`${BACKEND_URL}/analyze`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text, thread_id: activeThreadId })
-        });
-        if(!res.ok) throw new Error('Analysis Request Failed');
-        const data = await res.json();
-        await addWord(activeThreadId, text, data.analysis);
+       const analysis = await analyze(text);
+        await addWord(activeThreadId, text, analysis);
         
         const loader = document.getElementById('loading-bubble');
         if (loader) loader.remove();
 
-        appendChatBubble(data.text, data.analysis);
+        appendChatBubble(text, analysis);
         scrollToBottom();
     } catch (err) {
         const loader = document.getElementById('loading-bubble');
