@@ -39,3 +39,12 @@ export async function addWord(threadId, text, analysis) {
     await chrome.storage.local.set({words: words});
     return newWord;
 }
+
+export async function getApiKey() {
+    const result = await chrome.storage.local.get('geminiApiKey');
+    return result.geminiApiKey ?? '';
+}
+
+export async function saveApiKey(key){
+    await chrome.storage.local.set({geminiApiKey: key});
+}
