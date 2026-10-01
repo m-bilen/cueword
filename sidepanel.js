@@ -7,6 +7,15 @@ const BACKEND_URL = 'http://localhost:3000/api';
 
 let activeThreadId = null;
 let allThreads = [];
+const ERROR_MESSAGES = {
+    NO_API_KEY: 'API key eklenmemiş. Eklenti ayarlarından ekleyin.',
+    INVALID_KEY: 'API key geçersiz. ayarlardan tekrar deneyin.',
+    RATE_LIMITED: 'Çok hızlı istek gönderildi. Birkaç saniye bekleyip tekrar deneyin.',
+    NETWORK: 'Bağlantı sorunu. İnternetinizi kontrol edip tekrar deneyin.',
+    SERVER_ERROR: 'Gemini şu anda yanıt veremiyor. Biraz sonra tekrar deneyin.',
+    EMPTY_ANSWER: 'Gemini boş bir cevap döndürdü. Lütfen tekrar deneyin.'
+
+}
 
 // 1. Sol taraftaki başlıkları veritabanından yükle
 async function loadThreads() {
@@ -102,24 +111,21 @@ async function analyzeText(text) {
     // Geçici yükleniyor baloncuğu
     const loadingBubble = document.createElement('div');
     loadingBubble.className = 'chat-bubble';
-    loadingBubble.id = 'loading-bubble';
     loadingBubble.innerHTML = `<div class="chat-word">${text}</div><div class="chat-analysis" style="color: #80868b; font-style: italic;">Gemini analiz ediyor...</div>`;
     chatContainer.appendChild(loadingBubble);
     scrollToBottom();
 
-    try {
-       const analysis = await analyze(text);
+        try {
+        const analysis = await analyze(text);
         await addWord(activeThreadId, text, analysis);
-        
-        const loader = document.getElementById('loading-bubble');
-        if (loader) loader.remove();
 
+        loadingBubble.remove();
         appendChatBubble(text, analysis);
         scrollToBottom();
     } catch (err) {
-        const loader = document.getElementById('loading-bubble');
-        if (loader) loader.innerHTML = `<div class="chat-word">Hata</div><div class="chat-analysis">Motor bağlantısı koptu.</div>`;
         console.error('Analysis failed:', err);
+        const message = ERROR_MESSAGES[err.message] ?? 'Beklenmeyen bir hata oluştu.';
+        loadingBubble.innerHTML = `<div class="chat-word">Hata</div><div class="chat-analysis">${message}</div>`;
     }
 }
 
