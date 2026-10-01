@@ -2,11 +2,26 @@ import {getApiKey} from './storage.js';
 const GEMINI_MODEL = 'gemini-3.1-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 function buildPrompt(text){
-    return  `Sana bir İngilizce kelime, phrasal verb veya dizi repliği vereceğim: "${text}".
-        ilk olarak kelimenin sözlük anlamını söyle. Doğrudan filtresiz ve dobra bir üslupla:
-        - Eğer ki bir cümle verilirse cümlede bazı çok kullanılmayan veya popüler olsa da seviyesi yüksek diyebileceğimiz kelimelerin tek başına anlamlarını da ayrıca yaz.
-        - Varsa "at stake" örneğindeki gibi en popüler phrasal verb halini ekle.
-        Maksimum 2 veya 3 çok kısa maddede işi bitir. Aşırı kısa ve net ol.`;
+    return  `You are a subtitle dictionary for a language learner watching a film or series.
+Selected text: "${text}"
+
+Answer in Turkish, using proper Turkish characters (ç, ğ, ı, ö, ş, ü). Be extremely short, like quick study notes.
+
+If the selection is a word or short phrase, use exactly this format:
+<meaning in a few words>
+- <its most common phrasal verb, idiom or usage>: <meaning in a few words>
+- <another very common one, only if it really exists>: <meaning>
+
+If the selection is a sentence, use exactly this format:
+<natural translation>
+- <hardest word or phrase in it>: <meaning in a few words>
+
+Example for "stake":
+pay, hisse; risk
+- at stake: tehlikede, söz konusu
+- stake a claim: hak iddia etmek
+
+Rules: at most 3 lines, every line under 10 words. Plain text only. No headings, no bold, no extra explanation.`;
 }
 
 export async function analyze(text) {
