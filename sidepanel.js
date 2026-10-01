@@ -1,4 +1,4 @@
-import { getThreads, createThread} from './storage.js';
+import { getThreads, createThread, getWords, addWord} from './storage.js';
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
 const newThreadBtn = document.getElementById('newThreadBtn');
@@ -32,8 +32,7 @@ async function selectThread(threadId) {
     for (let item of items) { item.classList.remove('active'); }
     
     try {
-        const res = await fetch(`${BACKEND_URL}/threads/${threadId}/words`);
-        const words = await res.json();
+       const words = await getWords(threadId);
         
         chatContainer.innerHTML = '';
         if (words.length === 0) {
@@ -113,7 +112,9 @@ async function analyzeText(text) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: text, thread_id: activeThreadId })
         });
+        if(!res.ok) throw new Error('Analysis Request Failed');
         const data = await res.json();
+        await addWord(activeThreadId, text, data.analysis);
         
         const loader = document.getElementById('loading-bubble');
         if (loader) loader.remove();
@@ -123,6 +124,7 @@ async function analyzeText(text) {
     } catch (err) {
         const loader = document.getElementById('loading-bubble');
         if (loader) loader.innerHTML = `<div class="chat-word">Hata</div><div class="chat-analysis">Motor bağlantısı koptu.</div>`;
+        console.error('Analysis failed:', err);
     }
 }
 
