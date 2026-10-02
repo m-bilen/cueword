@@ -6,7 +6,11 @@ const RETRY_DELAY_MS = 1000;
 function buildPrompt(text, context){
     const contextPart = context
     ? `It appears in this sentence: "${context}"
-    The first line of your answer must be the meaning in THIS sentence.`
+Because a sentence is given, use this format instead of the formats below:
+<selected text>: <its basic dictionary meaning in a few words>
+→ <its meaning in THIS sentence, only if it differs from the basic meaning>
+- <its most common phrasal verb, idiom or usage>: <meaning in a few words>
+Do not translate the whole sentence.`
     : '';
     return  `You are a subtitle dictionary for a language learner watching a film or series.
 Selected text: "${contextPart}"
