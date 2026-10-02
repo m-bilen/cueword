@@ -8,7 +8,21 @@
 <body>
     <h1>Settings</h1>
     <label for="apiKeyInput">Gemini API Key</label>
-    <input type="password" id="apiKeyInput" placeholder=""Paste Your Key Here">
+    <input type="password" id="apiKeyInput" placeholder="Paste Your Key Here">
+
+    <label for="languageSelect">Explanation Language</label>
+    <select  id="languageSelect">
+        <option value="Turkish">Türkçe</option>
+        <option value="English">English</option>
+        <option value="Spanish">Español</option>
+        <option value="German">Deutsch</option>
+        <option value="French">Français</option>
+        <option value="Polish">Polski</option>
+        <option value="Italian">Italiano</option>
+        <option value="Portuguese">Português</option>
+        <option value="Russian">Русский</option>
+        <option value="Arabic">العربية</option>
+        </select>
     <button id="saveBtn">Save</button>
     <p id="status"></p>
     <script type="module" src="options.js"></script>

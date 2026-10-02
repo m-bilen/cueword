@@ -1,9 +1,9 @@
-import {getApiKey} from './storage.js';
+import {getApiKey, getTargetLanguage} from './storage.js';
 const GEMINI_MODEL = 'gemini-3.1-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const TIMEOUT_MS = 15000;
 const RETRY_DELAY_MS = 1000;
-function buildPrompt(text, context){
+function buildPrompt(text, context, targetLanguage){
     const contextPart = context
     ? `It appears in this sentence: "${context}"
 Because a sentence is given, use this format instead of the formats below:
@@ -13,10 +13,11 @@ Because a sentence is given, use this format instead of the formats below:
 Do not translate the whole sentence.`
     : '';
     return  `You are a subtitle dictionary for a language learner watching a film or series.
-Selected text: "${contextPart}"
+Selected text: "${text}"
+${contextPart}
 
-Answer in Turkish, using proper Turkish characters (ç, ğ, ı, ö, ş, ü). Be extremely short, like quick study notes.
-
+ Answer in ${targetLanguage}, using the correct letters and special characters of that language.
+Be extremely short, like quick study notes.
 If the selection is a word or short phrase, use exactly this format:
 <meaning in a few words>
 - <its most common phrasal verb, idiom or usage>: <meaning in a few words>
@@ -26,10 +27,13 @@ If the selection is a sentence, use exactly this format:
 <natural translation>
 - <hardest word or phrase in it>: <meaning in a few words>
 
-Example for "stake":
+Example for "stake" (in Turkish, only to show the format; write your own answer in ${targetLanguage}):
 pay, hisse; risk
 - at stake: tehlikede, söz konusu
 - stake a claim: hak iddia etmek
+
+If the selection looks like a partially selected word, use the sentence to find the full word and explain that word.
+If the selection is a person's or place's name, just say that in one line.
 
 Rules: at most 3 lines, every line under 10 words. Plain text only. No headings, no bold, no extra explanation.`;
 }
@@ -39,7 +43,7 @@ function wait (ms){
 
 }
 
-async function requestGemini(apiKey,text, context){
+async function requestGemini(apiKey,prompt){
     let res;
     try{
         res = await fetch(GEMINI_URL, {
@@ -49,7 +53,7 @@ async function requestGemini(apiKey,text, context){
             'x-goog-api-key': apiKey
             },
             body: JSON.stringify({
-                contents: [{parts: [{text: buildPrompt(text, context)}]}]
+                contents: [{parts: [{text: buildPrompt(prompt)}]}]
             }),
             signal: AbortSignal.timeout(TIMEOUT_MS)
         });
@@ -71,13 +75,16 @@ const RETRYABLE_ERRORS = ['NETWORK', 'RATE_LIMITED', 'SERVER_ERROR'];
 export async function analyze(text, context){
     const apiKey = await getApiKey();
     if(!apiKey) throw new Error('NO_API_KEY');
-
+    
+    const targetLanguage = await getTargetLanguage();
+    const prompt = buildPrompt(text, context, targetLanguage);
+ 
     try{
-        return await requestGemini(apiKey,text, context);
+        return await requestGemini(apiKey, prompt);
     } catch(err){
         if(!RETRYABLE_ERRORS.includes(err.message)) throw err;
         await wait(RETRY_DELAY_MS);
-        return await requestGemini(apiKey,text, context);
+        return await requestGemini(apiKey,prompt);
     }
 }
 

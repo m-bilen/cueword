@@ -48,3 +48,13 @@ export async function getApiKey() {
 export async function saveApiKey(key){
     await chrome.storage.local.set({geminiApiKey: key});
 }
+
+export async function getTargetLanguage(){
+    const result = await chrome.storage.local.get('targetLanguage');
+    return result.targetLanguage ?? 'Turkish';
+
+}
+
+export async function saveTargetLanguage(language){
+    await chrome.storage.local.set({ targetLanguage: language});
+}
