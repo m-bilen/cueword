@@ -3,9 +3,13 @@ const GEMINI_MODEL = 'gemini-3.1-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const TIMEOUT_MS = 15000;
 const RETRY_DELAY_MS = 1000;
-function buildPrompt(text){
+function buildPrompt(text, context){
+    const contextPart = context
+    ? `It appears in this sentence: "${context}"
+    The first line of your answer must be the meaning in THIS sentence.`
+    : '';
     return  `You are a subtitle dictionary for a language learner watching a film or series.
-Selected text: "${text}"
+Selected text: "${contextPart}"
 
 Answer in Turkish, using proper Turkish characters (ç, ğ, ı, ö, ş, ü). Be extremely short, like quick study notes.
 
@@ -31,7 +35,7 @@ function wait (ms){
 
 }
 
-async function requestGemini(apiKey,text){
+async function requestGemini(apiKey,text, context){
     let res;
     try{
         res = await fetch(GEMINI_URL, {
@@ -41,7 +45,7 @@ async function requestGemini(apiKey,text){
             'x-goog-api-key': apiKey
             },
             body: JSON.stringify({
-                contents: [{parts: [{text: buildPrompt(text)}]}]
+                contents: [{parts: [{text: buildPrompt(text, context)}]}]
             }),
             signal: AbortSignal.timeout(TIMEOUT_MS)
         });
@@ -60,16 +64,16 @@ async function requestGemini(apiKey,text){
 
 const RETRYABLE_ERRORS = ['NETWORK', 'RATE_LIMITED', 'SERVER_ERROR'];
 
-export async function analyze(text){
+export async function analyze(text, context){
     const apiKey = await getApiKey();
     if(!apiKey) throw new Error('NO_API_KEY');
 
     try{
-        return await requestGemini(apiKey,text);
+        return await requestGemini(apiKey,text, context);
     } catch(err){
         if(!RETRYABLE_ERRORS.includes(err.message)) throw err;
         await wait(RETRY_DELAY_MS);
-        return await requestGemini(apiKey,text);
+        return await requestGemini(apiKey,text, context);
     }
 }
 

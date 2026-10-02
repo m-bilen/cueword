@@ -100,11 +100,11 @@ function scrollToBottom() {
 // 5. Altyazı Seçildiğinde Çalışacak Tetikleyici
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "TEXT_SELECTED") {
-        analyzeText(message.text);
+        analyzeText(message.text, message.context);
     }
 });
 
-async function analyzeText(text) {
+async function analyzeText(text, context) {
     const placeholder = chatContainer.querySelector('.placeholder');
     if (placeholder) placeholder.remove();
 
@@ -116,7 +116,7 @@ async function analyzeText(text) {
     scrollToBottom();
 
         try {
-        const analysis = await analyze(text);
+        const analysis = await analyze(text, context);
         await addWord(activeThreadId, text, analysis);
 
         loadingBubble.remove();
