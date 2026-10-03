@@ -3,7 +3,7 @@ import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
 const newThreadBtn = document.getElementById('newThreadBtn');
-const BACKEND_URL = 'http://localhost:3000/api';
+
 
 let activeThreadId = null;
 let allThreads = [];
