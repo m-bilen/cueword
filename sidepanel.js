@@ -1,4 +1,4 @@
-import { getThreads, createThread, getWords, addWord} from './storage.js';
+import { getThreads, createThread, getWords, addWord, deleteThread} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
@@ -135,11 +135,34 @@ function renderThreads(threads){
         const li = document.createElement('li');
         li.className = 'history-item';
         if(activeThreadId === thread.id) li.classList.add ('active');
-        li.innerText = thread.title;
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = thread.title;
+        li.appendChild(titleSpan);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '×';
+        deleteBtn.title = 'Sil';
+        deleteBtn.addEventListener('click', (e) =>{
+            e.stopPropagation();
+            handleDeleteThread(thread);
+        });
+        li.appendChild(deleteBtn);
         li.addEventListener('click' , () => selectThread(thread.id));
         threadList.appendChild(li);
 
     });
+}
+
+async function handleDeleteThread(thread){
+    const confirmed = confirm (`"${thread.title}" başlığını ve içindeki tüm kelimeleri silmek istiyor musun?`);
+    if(!confirmed) return;
+    await deleteThread(thread.id);
+    if (activeThreadId === thread.id) activeThreadId = null;
+    await loadThreads();
+
+    
+
+    
 }
 
 loadThreads();

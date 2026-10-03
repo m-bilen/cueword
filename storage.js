@@ -58,3 +58,12 @@ export async function getTargetLanguage(){
 export async function saveTargetLanguage(language){
     await chrome.storage.local.set({ targetLanguage: language});
 }
+
+export async function deleteThread(threadId){
+    const threads = await getThreads();
+    const words = await getAllWords();
+    await chrome.storage.local.set({
+        threads: threads.filter(thread => thread.id !== threadId),
+        words: words.filter(word => word.threadId !==threadId)
+    });
+}
