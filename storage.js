@@ -67,3 +67,9 @@ export async function deleteThread(threadId){
         words: words.filter(word => word.threadId !==threadId)
     });
 }
+
+export async function deleteWord(wordId){
+    const words = await getAllWords();
+    await chrome.storage.local.set({ words: words.filter(word => word.id !== wordId) });
+    
+}

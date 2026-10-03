@@ -1,4 +1,4 @@
-import { getThreads, createThread, getWords, addWord, deleteThread} from './storage.js';
+import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
@@ -48,7 +48,7 @@ async function selectThread(threadId) {
         if (words.length === 0) {
             chatContainer.innerHTML = `<p class="placeholder">Bu başlık henüz boş. Altyazı seçtikçe buraya akacak...</p>`;
         } else {
-            words.forEach(item => appendChatBubble(item.text, item.analysis));
+            words.forEach(item => appendChatBubble(item.text, item.analysis, item.id));
             scrollToBottom();
         }
         
@@ -76,7 +76,7 @@ async function createNewThread(title) {
 }
 
 // 4. Ekrana Yeni Mesaj Baloncuğu Ekleme
-function appendChatBubble(text, analysis) {
+function appendChatBubble(text, analysis, wordId) {
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
     
@@ -90,6 +90,15 @@ function appendChatBubble(text, analysis) {
     
     bubble.appendChild(wordDiv);
     bubble.appendChild(analysisDiv);
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = '×';
+    deleteBtn.title = 'Sil';
+    deleteBtn.addEventListener('click', async () => {
+        await deleteWord(wordId);
+        bubble.remove();
+    });
+    bubble.appendChild(deleteBtn);
     chatContainer.appendChild(bubble);
 }
 
@@ -117,10 +126,10 @@ async function analyzeText(text, context) {
 
         try {
         const analysis = await analyze(text, context);
-        await addWord(activeThreadId, text, analysis);
+       const newWord = await addWord(activeThreadId, text, analysis);
 
         loadingBubble.remove();
-        appendChatBubble(text, analysis);
+        appendChatBubble(text, analysis, newWord.id);
         scrollToBottom();
     } catch (err) {
         console.error('Analysis failed:', err);
