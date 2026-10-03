@@ -21,13 +21,16 @@
     .placeholder { color: #80868b; text-align: center; margin-top: 40px; font-style: italic; font-size: 14px; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .history-item{ display: flex; align-items: center; justify-content: space-between; gap: 6px;}
-  .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;  }
+  .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
   .delete-btn { background: none; border: none; color: #80868b; cursor: pointer; font-size: 16px; visibility: hidden;}
   .history-item:hover .delete-btn { visibility: visible;}
   .delete-btn:hover { color: #f28b82;}
   .chat-bubble { position: relative; }
   .chat-bubble .delete-btn { position: absolute; top: 8px; right: 8px; }
   .chat-bubble:hover .delete-btn {visibility: visible;}
+  .rename-btn { background: none; border: none; color: #80868b; cursor: pointer; font-size: 14px; visibility: hidden;}
+  .history-item:hover .rename-btn {visibility: visible;}
+  .rename-btn:hover {color: 8ab4f8;}
   </style>
   
 </head>

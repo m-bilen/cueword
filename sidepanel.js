@@ -1,4 +1,4 @@
-import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord} from './storage.js';
+import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
@@ -149,6 +149,15 @@ function renderThreads(threads){
         li.appendChild(titleSpan);
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'rename-btn';
+        renameBtn.textContent = '✎';
+        renameBtn.title = 'Yeniden Adlandır';
+        renameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleRenameThread(thread);
+        })
+        li.appendChild(renameBtn);
         deleteBtn.textContent = '×';
         deleteBtn.title = 'Sil';
         deleteBtn.addEventListener('click', (e) =>{
@@ -169,9 +178,13 @@ async function handleDeleteThread(thread){
     if (activeThreadId === thread.id) activeThreadId = null;
     await loadThreads();
 
-    
+}
 
-    
+async function handleRenameThread(thread) {
+    const newTitle = prompt('Yeni başlık adı:', thread.title);
+    if (!newTitle || newTitle.trim() === '') return;
+    await renameThread(thread.id, newTitle.trim());
+    await loadThreads();
 }
 
 loadThreads();

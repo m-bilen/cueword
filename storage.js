@@ -73,3 +73,13 @@ export async function deleteWord(wordId){
     await chrome.storage.local.set({ words: words.filter(word => word.id !== wordId) });
     
 }
+
+export async function renameThread(threadId, newTitle){
+    const threads = await getThreads();
+    const thread = threads.find(t => t.id === threadId);
+    if (!thread)  return;
+    
+    thread.title = newTitle;
+    await chrome.storage.local.set({threads: threads});
+
+}
