@@ -85,7 +85,7 @@ window.addEventListener(
 
     if (selectedText.length > 0 && selectedText.length < 300) {
       if (!chrome.runtime?.id) return;
-      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: selectedText , context: context});
+      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: selectedText , context: context}).catch(() => {});
     }
     
   },
