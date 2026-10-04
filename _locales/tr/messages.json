@@ -1,0 +1,37 @@
+{
+  "extName": { "message": "Sub Context Analyzer" },
+  "extDescription": { "message": "Altyazıda bir kelime seç, o sahnedeki anlamını yapay zeka açıklasın." },
+  "openPanel": { "message": "Analiz panelini aç" },
+
+  "newThread": { "message": "+ Yeni Başlık Aç" },
+  "threadsHeader": { "message": "Dizi / Film Başlıkları" },
+  "defaultThreadTitle": { "message": "Genel Oturum" },
+  "newThreadPrompt": { "message": "Başlık adı ne olsun? (Örn: Breaking Bad S01E03)" },
+  "emptyPanel": { "message": "Soldan bir başlık seç veya yeni bir başlık açıp izlemeye başla..." },
+  "emptyThread": { "message": "Bu başlık henüz boş. Altyazı seçtikçe buraya akacak..." },
+  "analyzing": { "message": "Analiz ediliyor..." },
+
+  "rename": { "message": "Yeniden adlandır" },
+  "renamePrompt": { "message": "Yeni başlık adı:" },
+  "delete": { "message": "Sil" },
+  "deleteThreadConfirm": {
+    "message": "\"$TITLE$\" başlığını ve içindeki tüm kelimeleri silmek istiyor musun?",
+    "placeholders": { "title": { "content": "$1" } }
+  },
+
+  "errorTitle": { "message": "Hata" },
+  "errorNoApiKey": { "message": "API key girilmemiş. Eklenti ayarlarından ekleyin." },
+  "errorInvalidKey": { "message": "API key geçersiz. Ayarlardan kontrol edin." },
+  "errorRateLimited": { "message": "Çok hızlı istek gönderildi. Birkaç saniye bekleyip tekrar deneyin." },
+  "errorNetwork": { "message": "Bağlantı sorunu. İnternetinizi kontrol edip tekrar deneyin." },
+  "errorServer": { "message": "Gemini şu an yanıt vermiyor. Biraz sonra tekrar deneyin." },
+  "errorEmptyAnswer": { "message": "Gemini boş bir cevap döndürdü. Tekrar deneyin." },
+  "errorUnexpected": { "message": "Beklenmeyen bir hata oluştu." },
+
+  "settingsTitle": { "message": "Ayarlar" },
+  "apiKeyLabel": { "message": "Gemini API key" },
+  "apiKeyPlaceholder": { "message": "Key'ini buraya yapıştır" },
+  "languageLabel": { "message": "Açıklama dili" },
+  "save": { "message": "Kaydet" },
+  "saved": { "message": "Kaydedildi." }
+}

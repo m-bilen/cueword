@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Sub Context Analyzer v2",
+  "default_locale": "en",
+  "name": "__MSG_extName__",
   "version": "1.0",
-  "description": "Altyazılardaki kelime ve cümleleri Gemini ile derinlemesine analiz eder.",
+  "description": "__MSG_extDescription__",
   "permissions": [
     "sidePanel",
     "storage"
@@ -26,6 +27,6 @@
     }
   ],
   "action": {
-    "default_title": "Analiz Panelini Aç"
+    "default_title": "__MSG_openPanel__"
   }
 }
