@@ -89,16 +89,11 @@ function appendChatBubble(text, analysis, wordId) {
     analysisDiv.innerText = analysis;
     
     bubble.appendChild(wordDiv);
-    bubble.appendChild(analysisDiv);
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '×';
-    deleteBtn.title = 'Sil';
-    deleteBtn.addEventListener('click', async () => {
+    bubble.appendChild(createIconButton('delete-btn', '×', 'Sil', async () => {
         await deleteWord(wordId);
         bubble.remove();
-    });
-    bubble.appendChild(deleteBtn);
+    }));
+    bubble.appendChild(analysisDiv);
     chatContainer.appendChild(bubble);
 }
 
@@ -138,6 +133,19 @@ async function analyzeText(text, context) {
     }
 }
 
+function createIconButton(className, symbol, title, onClick){
+    const button = document.createElement('button');
+    button.className = className;
+    button.textContent = symbol;
+    button.title = title;
+    button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onClick();
+    });
+    return button;
+}
+
+
 function renderThreads(threads){
     threadList.innerHTML = '';
     threads.forEach(thread =>{
@@ -147,24 +155,8 @@ function renderThreads(threads){
         const titleSpan = document.createElement('span');
         titleSpan.textContent = thread.title;
         li.appendChild(titleSpan);
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        const renameBtn = document.createElement('button');
-        renameBtn.className = 'rename-btn';
-        renameBtn.textContent = '✎';
-        renameBtn.title = 'Yeniden Adlandır';
-        renameBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            handleRenameThread(thread);
-        })
-        li.appendChild(renameBtn);
-        deleteBtn.textContent = '×';
-        deleteBtn.title = 'Sil';
-        deleteBtn.addEventListener('click', (e) =>{
-            e.stopPropagation();
-            handleDeleteThread(thread);
-        });
-        li.appendChild(deleteBtn);
+        li.appendChild(createIconButton('rename-btn ' ,'✎', 'Yeniden Adlandır', () => handleRenameThread(thread) ));
+        li.appendChild(createIconButton('delete-btn', '×', 'Sil',() => handleDeleteThread(thread) ));
         li.addEventListener('click' , () => selectThread(thread.id));
         threadList.appendChild(li);
 
