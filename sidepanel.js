@@ -1,3 +1,4 @@
+import { t, applyTranslations} from './i18n.js';
 import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
@@ -7,15 +8,15 @@ const newThreadBtn = document.getElementById('newThreadBtn');
 
 let activeThreadId = null;
 let allThreads = [];
-const ERROR_MESSAGES = {
-    NO_API_KEY: 'API key eklenmemiş. Eklenti ayarlarından ekleyin.',
-    INVALID_KEY: 'API key geçersiz. ayarlardan tekrar deneyin.',
-    RATE_LIMITED: 'Çok hızlı istek gönderildi. Birkaç saniye bekleyip tekrar deneyin.',
-    NETWORK: 'Bağlantı sorunu. İnternetinizi kontrol edip tekrar deneyin.',
-    SERVER_ERROR: 'Gemini şu anda yanıt veremiyor. Biraz sonra tekrar deneyin.',
-    EMPTY_ANSWER: 'Gemini boş bir cevap döndürdü. Lütfen tekrar deneyin.'
+const ERROR_MESSAGE_KEYS = {
+    NO_API_KEY: 'errorNoApiKey',
+    INVALID_KEY: 'errorInvalidKey',
+    RATE_LIMITED: 'errorRateLimited',
+    NETWORK: 'errorNetwork',
+    SERVER_ERROR: 'errorServer',
+    EMPTY_ANSWER: 'errorEmptyAnswer'
 
-}
+};
 
 // 1. Sol taraftaki başlıkları veritabanından yükle
 async function loadThreads() {
@@ -26,7 +27,7 @@ async function loadThreads() {
         renderThreads(threads);
         // Hiç başlık yoksa otomatik bir tane aç
         if (threads.length === 0) {
-            createNewThread("Genel Oturum");
+            createNewThread(t('defaultThreadTitle'));
         } else if (!activeThreadId) {
             selectThread(threads[0].id);
         }
@@ -46,7 +47,7 @@ async function selectThread(threadId) {
         
         chatContainer.innerHTML = '';
         if (words.length === 0) {
-            chatContainer.innerHTML = `<p class="placeholder">Bu başlık henüz boş. Altyazı seçtikçe buraya akacak...</p>`;
+            chatContainer.innerHTML = `<p class="placeholder">${t('emptyThread')}</p>`;
         } else {
             words.forEach(item => appendChatBubble(item.text, item.analysis, item.id));
             scrollToBottom();
@@ -60,7 +61,7 @@ async function selectThread(threadId) {
 
 // 3. Manuel Yeni Başlık Açma Butonu
 newThreadBtn.addEventListener('click', () => {
-    const title = prompt("Başlık adı ne olsun? (Örn: Breaking Bad S01E03):");
+    const title = prompt(t('newThreadPrompt'));
     if (title && title.trim() !== "") {
         createNewThread(title.trim());
     }
@@ -115,7 +116,16 @@ async function analyzeText(text, context) {
     // Geçici yükleniyor baloncuğu
     const loadingBubble = document.createElement('div');
     loadingBubble.className = 'chat-bubble';
-    loadingBubble.innerHTML = `<div class="chat-word">${text}</div><div class="chat-analysis" style="color: #80868b; font-style: italic;">Gemini analiz ediyor...</div>`;
+    const loadingWord = document.createElement('div');
+    loadingWord.className = 'chat-word';
+    loadingWord.textContent = text;
+    const loadingText = document.createElement('div');
+    loadingText.className = 'chat-analysis';
+    loadingText.style.color = '#80868b';
+    loadingText.style.fontStyle = 'italic';
+    loadingText.textContent = t('analyzing');
+    loadingBubble.appendChild(loadingWord);
+    loadingBubble.appendChild(loadingText);
     chatContainer.appendChild(loadingBubble);
     scrollToBottom();
 
@@ -128,8 +138,11 @@ async function analyzeText(text, context) {
         scrollToBottom();
     } catch (err) {
         console.error('Analysis failed:', err);
-        const message = ERROR_MESSAGES[err.message] ?? 'Beklenmeyen bir hata oluştu.';
-        loadingBubble.innerHTML = `<div class="chat-word">Hata</div><div class="chat-analysis">${message}</div>`;
+        const message = t(ERROR_MESSAGE_KEYS[err.message] ?? 'errorUnexpected');
+        loadingWord.textContent = t('errorTitle');
+        loadingText.textContent = message;
+        loadingText.style.fontStyle = 'normal';
+        
     }
 }
 
@@ -155,8 +168,8 @@ function renderThreads(threads){
         const titleSpan = document.createElement('span');
         titleSpan.textContent = thread.title;
         li.appendChild(titleSpan);
-        li.appendChild(createIconButton('rename-btn ' ,'✎', 'Yeniden Adlandır', () => handleRenameThread(thread) ));
-        li.appendChild(createIconButton('delete-btn', '×', 'Sil',() => handleDeleteThread(thread) ));
+        li.appendChild(createIconButton('rename-btn ' ,'✎', t('rename'), () => handleRenameThread(thread) ));
+        li.appendChild(createIconButton('delete-btn', '×', t('delete'),() => handleDeleteThread(thread) ));
         li.addEventListener('click' , () => selectThread(thread.id));
         threadList.appendChild(li);
 
@@ -164,7 +177,7 @@ function renderThreads(threads){
 }
 
 async function handleDeleteThread(thread){
-    const confirmed = confirm (`"${thread.title}" başlığını ve içindeki tüm kelimeleri silmek istiyor musun?`);
+    const confirmed = confirm (t('deleteThreadConfirm', [thread.title]));
     if(!confirmed) return;
     await deleteThread(thread.id);
     if (activeThreadId === thread.id) activeThreadId = null;
@@ -173,10 +186,12 @@ async function handleDeleteThread(thread){
 }
 
 async function handleRenameThread(thread) {
-    const newTitle = prompt('Yeni başlık adı:', thread.title);
+    const newTitle = prompt(t('newThreadPrompt'));
     if (!newTitle || newTitle.trim() === '') return;
     await renameThread(thread.id, newTitle.trim());
     await loadThreads();
 }
 
+
+applyTranslations();
 loadThreads();
