@@ -55,20 +55,29 @@ function getSurroundingText(selection){
   return box.innerText.replace(/\s+/g, ' ').trim();
 }
 
+const ABBREVIATIONS = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St)\.$/;
 function findSentence(fullText, selectedText){
   const index = fullText.indexOf(selectedText);
   if(!index === -1) return null;
   const segmenter = new Intl.Segmenter(undefined, {granularity: 'sentence'});
-  const sentences = segmenter.segment(fullText);
-
-  for(const part of sentences) {
-    const start = part.index;
-    const end = part.index + part.segment.length;
-    if (index >= start && index < end) {
-      return part.segment.trim();
-    }
+  const parts = [...segmenter.segment(fullText)];
+  const i = parts.findIndex(part => index >= part.index && index < part.index + part.segment.length);
+  if (i === -1) return null;
+  let sentence = parts[i].segment.trim();
+  let start = i;
+  while(start > 0 && ABBREVIATIONS.test(parts[start -1 ].segment.trim())){
+    start --;
+    sentence = parts[start].segment.trim() + ' ' + sentence;
   }
-  return null;
+ 
+  
+  let end = i;
+  while (end < parts.length -1 && ABBREVIATIONS.test(parts[end].segment.trim())){
+    end++;
+    sentence = sentence + ' ' + parts[end].segment.trim();
+  }
+
+  return sentence;
 }
 
 window.addEventListener(
