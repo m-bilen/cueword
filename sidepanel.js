@@ -142,10 +142,14 @@ async function analyzeText(text, context) {
         scrollToBottom();
         }
     } catch (err) {
-        console.error('Analysis failed:', err);
-        const message = t(ERROR_MESSAGE_KEYS[err.message] ?? 'errorUnexpected');
+        const messageKey = ERROR_MESSAGE_KEYS[err.message];
+        if (messageKey){
+            console.warn('Analysis Failed', err.message); 
+        } else {
+            console.error('Analysis Failed', err);
+        }
         loadingWord.textContent = t('errorTitle');
-        loadingText.textContent = message;
+        loadingText.textContent = t(messageKey ?? 'errorUnexpected');
         loadingText.style.fontStyle = 'normal';
         
     }
