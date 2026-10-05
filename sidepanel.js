@@ -110,6 +110,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function analyzeText(text, context) {
+    const threadId = activeThreadId;
     const placeholder = chatContainer.querySelector('.placeholder');
     if (placeholder) placeholder.remove();
 
@@ -131,11 +132,15 @@ async function analyzeText(text, context) {
 
         try {
         const analysis = await analyze(text, context);
-       const newWord = await addWord(activeThreadId, text, analysis);
+       const newWord = await addWord(threadId, text, analysis);
 
         loadingBubble.remove();
+        if (activeThreadId === threadId){
+
+        
         appendChatBubble(text, analysis, newWord.id);
         scrollToBottom();
+        }
     } catch (err) {
         console.error('Analysis failed:', err);
         const message = t(ERROR_MESSAGE_KEYS[err.message] ?? 'errorUnexpected');
