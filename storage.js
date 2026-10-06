@@ -26,12 +26,13 @@ export async function getWords(threadId) {
     return words.filter(word => word.threadId === threadId);
 }
 
-export async function addWord(threadId, text, analysis) {
+export async function addWord(threadId, text, analysis, context) {
     const newWord = {
         id: crypto.randomUUID(),
         threadId: threadId,
         text: text,
         analysis: analysis, 
+        context: context ?? null,
         createdAt: Date.now()
     };
     const words = await getAllWords();

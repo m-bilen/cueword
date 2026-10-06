@@ -132,7 +132,7 @@ async function analyzeText(text, context) {
 
         try {
         const analysis = await analyze(text, context);
-       const newWord = await addWord(threadId, text, analysis);
+       const newWord = await addWord(threadId, text, analysis, context);
 
         loadingBubble.remove();
         if (activeThreadId === threadId){
