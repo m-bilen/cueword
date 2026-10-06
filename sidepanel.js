@@ -85,7 +85,7 @@ function appendChatBubble(text, analysis, wordId) {
     
     const analysisDiv = document.createElement('div');
     analysisDiv.className = 'chat-analysis';
-    analysisDiv.innerText = analysis;
+    renderAnalysis(analysisDiv, analysis, text);
     
     bubble.appendChild(wordDiv);
     bubble.appendChild(createIconButton('delete-btn', '×', 'Sil', async () => {
@@ -170,6 +170,43 @@ function createIconButton(className, symbol, title, onClick){
 
 function isLine(text){
     return text.trim().split(/\s+/).length >=4;
+}
+
+function renderAnalysis(container,analysis,word) {
+    const lines = analysis.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+    lines.forEach((line, index) => {
+        const lineDiv = document.createElement('div');
+        const repeatedPrefix = word.toLowerCase() + ':';
+        if (index === 0 && line.toLowerCase().startsWith(repeatedPrefix)) {
+            line = line.slice(repeatedPrefix.length).trim();
+        }
+        if (line.startsWith('→')) {
+            const arrow = document.createElement('span');
+            arrow.className = 'analysis-arrow';
+            arrow.textContent = '→ ';
+            lineDiv.appendChild(arrow);
+            lineDiv.append(line.slice(1).trim());
+
+        } else if (/^[-•*]\s/.test(line)) {
+            lineDiv.className = 'analysis-usage';
+            const content = line.slice(2);
+            const colon = content.indexOf(':');
+            if (colon > 0) {
+                const term = document.createElement('span');
+                term.className = 'usage-term';
+                term.textContent = content.slice(0, colon);
+                lineDiv.appendChild(term);
+                lineDiv.append(content.slice(colon));
+            } else {
+                lineDiv.textContent = content;
+
+            }  
+        } else {
+            lineDiv.textContent = line;
+        }
+        container.appendChild(lineDiv);
+    });
 }
 
 
