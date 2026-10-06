@@ -5,7 +5,7 @@
   <title data-i18n="extName"></title>
   <link rel="stylesheet" href="theme.css">
   <style>
-   body { margin: 0; display: flex; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+   body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
 .sidebar { width: 168px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--line); }
 .new-thread-btn { margin: 14px 12px 18px; padding: 11px 12px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; text-align: left; cursor: pointer; }
 .new-thread-btn:hover { filter: brightness(1.08); }
@@ -43,20 +43,41 @@
 .analysis-arrow { color: var(--text-muted); }
 .analysis-usage { color: var(--text-secondary); }
 .usage-term { font-family: var(--font-ui); font-weight: 500; }
+.topbar { flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line);}
+.topbar-title { min-width: 0; font-size: 14px; font-weight: 600; color: #F4F2EE; overflow: hidden; text-overflow:ellipsis; white-space: nowrap;}
+.topbar-count { font-size: 12px; color: var(--text-muted); white-space: nowrap;}
+.topbar .icon-btn:last-child { margin-left: auto;}
+.icon-btn { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items:center; justify-content: center; padding: 0; background: none; border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; }
+.icon-btn:hover { color: var(--text); border-color: var(--text-muted); }
+.layout { flex: 1; min-height: 0; display: flex; }
   </style>
   
 </head>
 <body>
-  <div class="sidebar">
-    <button class="new-thread-btn" id="newThreadBtn" data-i18n="newThread">+ Yeni Başlık Aç</button>
-   <h3 data-i18n="threadsHeader"></h3>
-    <ul class="history-list" id="threadList"></ul>
-  </div>
-  <div class="main-content">
-    <div class="chat-container" id="chatContainer">
-      <p class="placeholder" data-i18n="emptyPanel"</p>
+  <header class="topbar">
+    <button class="icon-btn" id="toggleThreadsBtn" data-i18n-title="toggleThreads">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="15"></rect><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"></line><polyline class="chevron" points="16 9.5 13.5 12 16 14.5"></polyline></svg>
+    </button>
+    <div class="topbar-title" id="currentThreadTitle"></div>
+    <div class="topbar-count" id="currentThreadCount"></div>
+    <button class="icon-btn" id="settingsBtn" data-i18n-title="settingsTitle">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="17" x2="20" y2="17"></line><circle cx="9" cy="7" r="2.2" fill="#0E0E0D"></circle><circle cx="15" cy="17" r="2.2" fill="#0E0E0D"></circle></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <div class="sidebar">
+      <button class="new-thread-btn" id="newThreadBtn" data-i18n="newThread"></button>
+      <h3 data-i18n="threadsHeader"></h3>
+      <ul class="history-list" id="threadList"></ul>
+    </div>
+    <div class="main-content">
+      <div class="chat-container" id="chatContainer">
+        <p class="placeholder" data-i18n="emptyPanel"></p>
+      </div>
     </div>
   </div>
-  <script type = "module" src="sidepanel.js"></script>
+
+  <script type="module" src="sidepanel.js"></script>
 </body>
 </html>

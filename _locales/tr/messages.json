@@ -18,6 +18,11 @@
     "message": "\"$TITLE$\" başlığını ve içindeki tüm kelimeleri silmek istiyor musun?",
     "placeholders": { "title": { "content": "$1" } }
   },
+  "toggleThreads": { "message": "Başlıkları göster veya gizle" },
+"wordCount": {
+  "message": "$COUNT$ kelime",
+  "placeholders": { "count": { "content": "$1" } }
+},
 
   "errorTitle": { "message": "Hata" },
   "errorNoApiKey": { "message": "API key girilmemiş. Eklenti ayarlarından ekleyin." },
@@ -31,6 +36,8 @@
   "settingsTitle": { "message": "Ayarlar" },
   "apiKeyLabel": { "message": "Gemini API key" },
   "apiKeyPlaceholder": { "message": "Key'ini buraya yapıştır" },
+  "apiKeyHelp": {"message": "Henüz Key'in yok mu?"},
+  "apiKeyHelpLink": {"message": "Google AI Studio'dan ücretsiz al. →"},
   "languageLabel": { "message": "Açıklama dili" },
   "save": { "message": "Kaydet" },
   "saved": { "message": "Kaydedildi." }

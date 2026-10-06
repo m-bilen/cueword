@@ -15,8 +15,13 @@
   "renamePrompt": { "message": "New session name:" },
   "delete": { "message": "Delete" },
   "deleteThreadConfirm": {
-    "message": "Delete \"$TITLE$\" and all of its words?",
-    "placeholders": { "title": { "content": "$1" } }
+  "message": "Delete \"$TITLE$\" and all of its words?",
+  "placeholders": { "title": { "content": "$1" } }
+  },
+   "toggleThreads": {"message": "Show or hide sessions"},
+  "wordCount": {
+    "message": "$COUNT$ words",
+    "placeholders": {"count": {"content": "$1"}}
   },
 
   "errorTitle": { "message": "Error" },
@@ -31,6 +36,8 @@
   "settingsTitle": { "message": "Settings" },
   "apiKeyLabel": { "message": "Gemini API key" },
   "apiKeyPlaceholder": { "message": "Paste your key here" },
+  "apiKeyHelp": {"message": "Don't have a key yet?"},
+  "apiKeyHelpLink": {"message": "Get a free one from Google AI Studio →"},
   "languageLabel": { "message": "Explanation language" },
   "save": { "message": "Save" },
   "saved": { "message": "Saved." }

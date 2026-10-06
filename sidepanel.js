@@ -4,6 +4,9 @@ import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
 const newThreadBtn = document.getElementById('newThreadBtn');
+const currentThreadTitle = document.getElementById('currentThreadTitle');
+const currentThreadCount = document.getElementById('currentThreadCount');
+const settingsBtn = document.getElementById('settingsBtn');
 
 
 let activeThreadId = null;
@@ -91,9 +94,11 @@ function appendChatBubble(text, analysis, wordId) {
     bubble.appendChild(createIconButton('delete-btn', '×', 'Sil', async () => {
         await deleteWord(wordId);
         bubble.remove();
+        updateHeader();
     }));
     bubble.appendChild(analysisDiv);
     chatContainer.appendChild(bubble);
+    updateHeader();
 }
 
 function scrollToBottom() {
@@ -114,6 +119,7 @@ async function analyzeText(text, context) {
 
     const loadingBubble = document.createElement('div');
     loadingBubble.className = 'chat-bubble';
+    loadingBubble.className = 'chat-bubble is-loading';
     const loadingWord = document.createElement('div');
     loadingWord.className = 'chat-word';
     loadingWord.textContent = text;
@@ -209,6 +215,13 @@ function renderAnalysis(container,analysis,word) {
     });
 }
 
+function updateHeader(){
+    const thread = allThreads.find(item => item.id === activeThreadId);
+    const count = chatContainer.querySelectorAll('.chat-bubble:not(.is-loading)').length;
+    currentThreadTitle.textContent = thread ? thread.title : '';
+    currentThreadCount.textContent = thread ? t('wordCount', [String(count)]) : '';
+}
+
 
 function renderThreads(threads){
     threadList.innerHTML = '';
@@ -223,6 +236,7 @@ function renderThreads(threads){
         li.appendChild(createIconButton('delete-btn', '×', t('delete'),() => handleDeleteThread(thread) ));
         li.addEventListener('click' , () => selectThread(thread.id));
         threadList.appendChild(li);
+        updateHeader();
 
     });
 }
@@ -243,6 +257,6 @@ async function handleRenameThread(thread) {
     await loadThreads();
 }
 
-
+settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
 applyTranslations();
 loadThreads();
