@@ -18,14 +18,13 @@ const ERROR_MESSAGE_KEYS = {
 
 };
 
-// 1. Sol taraftaki başlıkları veritabanından yükle
 async function loadThreads() {
     try {
         const threads = await getThreads();
         allThreads = threads;
        
         renderThreads(threads);
-        // Hiç başlık yoksa otomatik bir tane aç
+        
         if (threads.length === 0) {
             createNewThread(t('defaultThreadTitle'));
         } else if (!activeThreadId) {
@@ -34,11 +33,11 @@ async function loadThreads() {
     } catch (err) { console.error("Başlıklar yüklenemedi", err); }
 }
 
-// 2. Seçilen başlığı aktif et ve içindeki geçmiş kelimeleri ekrana diz
+
 async function selectThread(threadId) {
     activeThreadId = threadId;
     
-    // Aktif sınıfını görsel olarak güncellemek için listeyi sessizce yenile
+
     const items = threadList.children;
     for (let item of items) { item.classList.remove('active'); }
     
@@ -53,13 +52,12 @@ async function selectThread(threadId) {
             scrollToBottom();
         }
         
-        // Aktif başlığı sidebar'da işaretle
         renderThreads(allThreads);
     } catch (err) { console.error("Kelimeler çekilemedi", err); }
 }
 
 
-// 3. Manuel Yeni Başlık Açma Butonu
+
 newThreadBtn.addEventListener('click', () => {
     const title = prompt(t('newThreadPrompt'));
     if (title && title.trim() !== "") {
@@ -76,7 +74,6 @@ async function createNewThread(title) {
     } catch (err) { console.error("Başlık oluşturulamadı", err); }
 }
 
-// 4. Ekrana Yeni Mesaj Baloncuğu Ekleme
 function appendChatBubble(text, analysis, wordId) {
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
@@ -84,6 +81,7 @@ function appendChatBubble(text, analysis, wordId) {
     const wordDiv = document.createElement('div');
     wordDiv.className = 'chat-word';
     wordDiv.innerText = text;
+    if (isLine(text)) wordDiv.classList.add('is-line');
     
     const analysisDiv = document.createElement('div');
     analysisDiv.className = 'chat-analysis';
@@ -102,7 +100,6 @@ function scrollToBottom() {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// 5. Altyazı Seçildiğinde Çalışacak Tetikleyici
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "TEXT_SELECTED") {
         analyzeText(message.text, message.context);
@@ -114,12 +111,13 @@ async function analyzeText(text, context) {
     const placeholder = chatContainer.querySelector('.placeholder');
     if (placeholder) placeholder.remove();
 
-    // Geçici yükleniyor baloncuğu
+
     const loadingBubble = document.createElement('div');
     loadingBubble.className = 'chat-bubble';
     const loadingWord = document.createElement('div');
     loadingWord.className = 'chat-word';
     loadingWord.textContent = text;
+    if (isLine(text)) loadingWord.classList.add('is-line');
     const loadingText = document.createElement('div');
     loadingText.className = 'chat-analysis';
     loadingText.style.color = '#80868b';
@@ -165,6 +163,10 @@ function createIconButton(className, symbol, title, onClick){
         onClick();
     });
     return button;
+}
+
+function isLine(text){
+    return text.trim().split(/\s+/).length >=4;
 }
 
 
