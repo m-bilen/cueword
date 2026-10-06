@@ -84,3 +84,12 @@ export async function renameThread(threadId, newTitle){
     await chrome.storage.local.set({threads: threads});
 
 }
+
+export async function getThreadsCollapsed(){
+    const result = await chrome.storage.local.get('threadsCollapsed');
+    return result.threadsCollapsed ?? false;
+}
+
+export async function saveThreadsCollapsed(collapsed){
+    await chrome.storage.local.set({ threadsCollapsed: collapsed});
+}

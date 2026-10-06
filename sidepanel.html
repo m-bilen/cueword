@@ -50,6 +50,13 @@
 .icon-btn { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items:center; justify-content: center; padding: 0; background: none; border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; }
 .icon-btn:hover { color: var(--text); border-color: var(--text-muted); }
 .layout { flex: 1; min-height: 0; display: flex; }
+.threads-collapsed .sidebar { width: 48px; }
+.threads-collapsed .sidebar h3,
+.threads-collapsed .history-list { display: none;}
+.threads-collapsed .new-thread-btn { width: 32px; height: 32px; margin: 14px 8px; padding: 0; font-size: 0; text-align: center;}
+.threads-collapsed .new-thread-btn::before { content: '+'; font-size: 18px;}
+.threads-collapsed .chevron { transform: rotate(180deg); transform-origin: 14.75px 12px;}
+
   </style>
   
 </head>

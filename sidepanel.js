@@ -1,5 +1,5 @@
 import { t, applyTranslations} from './i18n.js';
-import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread} from './storage.js';
+import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread,getThreadsCollapsed, saveThreadsCollapsed} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
@@ -7,6 +7,7 @@ const newThreadBtn = document.getElementById('newThreadBtn');
 const currentThreadTitle = document.getElementById('currentThreadTitle');
 const currentThreadCount = document.getElementById('currentThreadCount');
 const settingsBtn = document.getElementById('settingsBtn');
+const toggleThreadsBtn = document.getElementById('toggleThreadsBtn');
 
 
 let activeThreadId = null;
@@ -258,5 +259,12 @@ async function handleRenameThread(thread) {
 }
 
 settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
+toggleThreadsBtn.addEventListener('click', async () => {
+    const collapsed = document.body.classList.toggle('threads-collapsed');
+    await saveThreadsCollapsed(collapsed);
+
+});
+if (await getThreadsCollapsed()) document.body.classList.add('threads-collapsed');
+
 applyTranslations();
 loadThreads();
