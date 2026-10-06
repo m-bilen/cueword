@@ -120,9 +120,13 @@ async function analyzeText(text, context) {
     if (isLine(text)) loadingWord.classList.add('is-line');
     const loadingText = document.createElement('div');
     loadingText.className = 'chat-analysis';
-    loadingText.style.color = '#80868b';
-    loadingText.style.fontStyle = 'italic';
-    loadingText.textContent = t('analyzing');
+    const loadingBar = document.createElement('div');
+    loadingBar.className = 'loading-bar';
+    const loadingLabel = document.createElement('span');
+    loadingLabel.className = 'sr-only';
+    loadingLabel.textContent = t('analyzing');
+    loadingText.appendChild(loadingBar);
+    loadingText.appendChild(loadingLabel);
     loadingBubble.appendChild(loadingWord);
     loadingBubble.appendChild(loadingText);
     chatContainer.appendChild(loadingBubble);
@@ -148,7 +152,6 @@ async function analyzeText(text, context) {
         }
         loadingWord.textContent = t('errorTitle');
         loadingText.textContent = t(messageKey ?? 'errorUnexpected');
-        loadingText.style.fontStyle = 'normal';
         
     }
 }
