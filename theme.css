@@ -1,0 +1,55 @@
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/IBMPlexSans-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+
+}
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/IBMPlexSans-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('fonts/IBMPlexSans-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display:swap;
+}
+
+@font-face {
+    font-family: 'Literata';
+    src: url('fonts/Literata_18pt-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Literata';
+    src: url('fonts/Literata_18_pt-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+}
+
+:root{
+    --bg: #0E0E0D;
+    --bg-raised: #161614;
+    --line: #2A2A27;
+    --text:  #E8E6E1;
+    --text-meaning: #D6D3CC;
+    --text-secondary: #BDBAB2;
+    --text-muted: #A3A098;
+    --accent: #F2D14B;
+    --on-accent: #141414;
+    --radius: 2px;
+
+    --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-book: 'Literata', Georgia, serif;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
