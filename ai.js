@@ -1,7 +1,7 @@
 import {getApiKey, getTargetLanguage} from './storage.js';
-const GEMINI_MODEL = 'gemini-3.1-flash-lite';
+const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-const TIMEOUT_MS = 15000;
+const TIMEOUT_MS = 5000;
 const RETRY_DELAY_MS = 1000;
 function buildPrompt(text, context, targetLanguage){
     const contextPart = context
@@ -53,11 +53,12 @@ async function requestGemini(apiKey,prompt){
             'x-goog-api-key': apiKey
             },
             body: JSON.stringify({
-                contents: [{parts: [{text: buildPrompt(prompt)}]}]
+                contents: [{parts: [{text: prompt}]}]
             }),
             signal: AbortSignal.timeout(TIMEOUT_MS)
         });
     } catch(err){
+        if (err.name === 'TimeoutError') throw new Error('TIMEOUT');
        throw new Error('NETWORK');
     }
     
@@ -70,7 +71,7 @@ async function requestGemini(apiKey,prompt){
     return answer.trim();
 }
 
-const RETRYABLE_ERRORS = ['NETWORK', 'RATE_LIMITED', 'SERVER_ERROR'];
+const RETRYABLE_ERRORS = ['NETWORK', 'RATE_LIMITED', 'SERVER_ERROR', 'TIMEOUT'];
 
 export async function analyze(text, context){
     const apiKey = await getApiKey();
@@ -83,7 +84,7 @@ export async function analyze(text, context){
         return await requestGemini(apiKey, prompt);
     } catch(err){
         if(!RETRYABLE_ERRORS.includes(err.message)) throw err;
-        await wait(RETRY_DELAY_MS);
+        if (err.message !== 'TIMEOUT') await wait(RETRY_DELAY_MS);
         return await requestGemini(apiKey,prompt);
     }
 }

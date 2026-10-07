@@ -18,7 +18,8 @@ const ERROR_MESSAGE_KEYS = {
     RATE_LIMITED: 'errorRateLimited',
     NETWORK: 'errorNetwork',
     SERVER_ERROR: 'errorServer',
-    EMPTY_ANSWER: 'errorEmptyAnswer'
+    EMPTY_ANSWER: 'errorEmptyAnswer',
+    TIMEOUT: 'errorServer'
 
 };
 
