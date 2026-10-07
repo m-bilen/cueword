@@ -23,6 +23,7 @@ window.addEventListener(
                 pointer-events: auto !important;
                 user-select: text !important;
                 -webkit-user-select: text !important;
+                -webkit-user-drag: none !important!;
                 z-index: 2147483647 !important;
             }
             /* Video oynatıcının tıklamaları yutmasını engelle */
@@ -114,3 +115,11 @@ window.addEventListener("pointerdown", blockPageMouseEvents, true);
 window.addEventListener("selectstart", blockPageMouseEvents, true);
 
 window.addEventListener("click", blockPageMouseEvents, true);
+
+function blockDrag(e){
+  if (!isAltHeld) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+}
+window.addEventListener("dragstart", blockDrag, true);
