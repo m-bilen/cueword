@@ -93,3 +93,12 @@ export async function getThreadsCollapsed(){
 export async function saveThreadsCollapsed(collapsed){
     await chrome.storage.local.set({ threadsCollapsed: collapsed});
 }
+
+export async function getPauseOnSelect() {
+    const result = await chrome.storage.local.get('pauseOnSelect');
+    return result.pauseOnSelect ?? true;
+}
+
+export async function savePauseOnSelect(enabled){
+    await chrome.storage.local.set({ pauseOnSelect: enabled });
+}

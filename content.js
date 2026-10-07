@@ -1,5 +1,14 @@
-// This checks whether the alt key is pressed
+
 let isAltHeld = false;
+let pauseOnSelect = true;
+chrome.storage.local.get('pauseOnSelect').then((result) => {
+  pauseOnSelect = result.pauseOnSelect ?? true;
+});
+chrome.storage.onChanged.addListener((changes) => {
+  if(changes.pauseOnSelect) {
+    pauseOnSelect = changes.pauseOnSelect.newWalue;
+  }
+});
 const SUBTITLE_CONTAINERS = '.jw-captions, .vjs-text-track-display, .vjs-text-track-cue, [class*= "subtitle"], .player-timedtext';
 const TEXT_BLOCKS = 'p, li, td, blockquote, h1, h2, h3, h4, h5, h6';
 
@@ -102,10 +111,16 @@ window.addEventListener(
   true,
 );
 
+function pausevideos() {
+  document.querySelectorAll("video").forEach((video) => {
+    if (!video.paused) video.pause();
+  });
+}
 
 
 function blockPageMouseEvents(e) {
   if (!isAltHeld) return;
+  if (e.type === "mousedown" && pauseOnSelect) pausevideos();
   e.stopImmediatePropagation();
 }
 window.addEventListener("mousedown", blockPageMouseEvents, true);

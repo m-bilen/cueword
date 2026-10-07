@@ -40,5 +40,8 @@
   "apiKeyHelpLink": {"message": "Get a free one from Google AI Studio →"},
   "languageLabel": { "message": "Explanation language" },
   "save": { "message": "Save" },
-  "saved": { "message": "Saved." }
+  "saved": { "message": "Saved." },
+  "pauseOnSelectLabel": {
+    "message": "Pause the video when I start selecting."
+  }
 }

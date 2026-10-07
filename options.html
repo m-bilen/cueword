@@ -36,7 +36,7 @@
     font-size: 13px;
     color: var(--text-muted);
   }
-  input, select {
+  input:not([type = "checkbox"]), select {
     padding: 12px 14px;
     background: var(--bg-raised);
     color: var(--text);
@@ -44,7 +44,7 @@
     border-radius: var(--radius);
     font-size: 14px;
   }
-  input:focus, select:focus {
+  input:not([type = "checkbox"]):focus, select:focus {
     outline: none;
     border-color: var(--accent);
   }
@@ -88,6 +88,22 @@
     font-size: 13px;
     color: var(--text-muted);
   }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .check input{
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
 </style>
 
 </head>
@@ -120,6 +136,12 @@
     </select>
   </section>
 
+<section class = "field">
+  <label class ="check">
+    <input type="checkbox" id = "pauseOnSelect">
+    <span data-i18n="pauseOnSelectLabel"></span>
+  </label>
+</section>
   <div class="actions">
     <button id="saveBtn" data-i18n="save"></button>
     <p id="status"></p>

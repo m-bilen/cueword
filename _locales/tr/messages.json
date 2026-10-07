@@ -40,5 +40,8 @@
   "apiKeyHelpLink": {"message": "Google AI Studio'dan ücretsiz al. →"},
   "languageLabel": { "message": "Açıklama dili" },
   "save": { "message": "Kaydet" },
-  "saved": { "message": "Kaydedildi." }
+  "saved": { "message": "Kaydedildi." },
+  "pauseOnSelectLabel": {
+  "message": "Seçime başlayınca videoyu durdur"
+}
 }
