@@ -15,4 +15,5 @@ saveBtn.addEventListener('click', async () => {
     await saveApiKey(apiKeyInput.value.trim());
     await saveTargetLanguage(languageSelect.value);
     status.textContent = t('saved');
+    setTimeout(() => { status.textContent = ''; }, 2000);
 });
