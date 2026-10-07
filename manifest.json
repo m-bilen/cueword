@@ -1,6 +1,12 @@
 {
   "manifest_version": 3,
   "default_locale": "en",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128":"icons/icon128.png"
+  },
   "name": "__MSG_extName__",
   "version": "1.0",
   "description": "__MSG_extDescription__",
@@ -27,6 +33,10 @@
     }
   ],
   "action": {
-    "default_title": "__MSG_openPanel__"
+    "default_title": "__MSG_openPanel__",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
   }
 }
