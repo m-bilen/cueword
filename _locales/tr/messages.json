@@ -1,6 +1,6 @@
 {
-  "extName": { "message": "Sub Context Analyzer" },
-  "extDescription": { "message": "Altyazıda bir kelime seç, o sahnedeki anlamını yapay zeka açıklasın." },
+  "extName": { "message": "Cueword: Altyazılarla Dil Öğren" },
+  "extDescription": { "message": "Altyazıda bir kelimeyi ya da repliği seç, sahnedeki anlamını gör. Her şey dizi ve film başına kaydedilir." },
   "openPanel": { "message": "Analiz panelini aç" },
 
   "newThread": { "message": "+ Yeni Başlık Aç" },

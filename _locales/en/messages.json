@@ -1,6 +1,6 @@
 {
-  "extName": { "message": "Sub Context Analyzer" },
-  "extDescription": { "message": "Select any word in a subtitle and get its meaning in that exact scene, explained by AI." },
+  "extName": { "message": "Cueword: Learn Languages from Subtitles" },
+  "extDescription": { "message": "Select a word or line in subtitles on any streaming site and get its meaning in the context of the scene. Saved by show." },
   "openPanel": { "message": "Open analysis panel" },
 
   "newThread": { "message": "+ New Session" },
