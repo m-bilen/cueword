@@ -2,6 +2,7 @@ import {getApiKey, getTargetLanguage} from './storage.js';
 const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const TIMEOUT_MS = 5000;
+const RETRY_TIMEOUT_MS = 15000;
 const RETRY_DELAY_MS = 1000;
 function buildPrompt(text, context, targetLanguage){
     const contextPart = context
@@ -43,7 +44,7 @@ function wait (ms){
 
 }
 
-async function requestGemini(apiKey,prompt){
+async function requestGemini(apiKey, prompt, timeoutMs){
     let res;
     try{
         res = await fetch(GEMINI_URL, {
@@ -55,7 +56,7 @@ async function requestGemini(apiKey,prompt){
             body: JSON.stringify({
                 contents: [{parts: [{text: prompt}]}]
             }),
-            signal: AbortSignal.timeout(TIMEOUT_MS)
+            signal: AbortSignal.timeout(timeoutMs)
         });
     } catch(err){
         if (err.name === 'TimeoutError') throw new Error('TIMEOUT');
@@ -81,11 +82,11 @@ export async function analyze(text, context){
     const prompt = buildPrompt(text, context, targetLanguage);
  
     try{
-        return await requestGemini(apiKey, prompt);
+        return await requestGemini(apiKey, prompt, TIMEOUT_MS);
     } catch(err){
         if(!RETRYABLE_ERRORS.includes(err.message)) throw err;
         if (err.message !== 'TIMEOUT') await wait(RETRY_DELAY_MS);
-        return await requestGemini(apiKey,prompt);
+        return await requestGemini(apiKey,prompt, RETRY_TIMEOUT_MS);
     }
 }
 
