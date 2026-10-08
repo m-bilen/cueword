@@ -65,6 +65,34 @@ function getSurroundingText(selection){
   return box.innerText.replace(/\s+/g, ' ').trim();
 }
 
+const WORD_CHAR = /[\p{L}\p{N}'’]/u;
+function expandToWords(selection){
+  if (!selection || selection.rangeCount === 0) return "";
+  const range = selection.getRangeAt(0);
+  let text = selection.toString();
+
+  const start = range.startContainer;
+  if (start.nodeType === Node.TEXT_NODE) {
+    const s = start.textContent;
+    let i = range.startOffset;
+    if (WORD_CHAR.test(s[i] ?? "")) {
+      while (i > 0 && WORD_CHAR.test(s[i-1])) i--;
+      text = s.slice(i, range.startOffset) + text;
+    }
+  }
+
+  const end = range.endContainer;
+  if (end.nodeType === Node.TEXT_NODE) {
+    const s = end.textContent;
+    let j = range.endOffset;
+    if (j > 0 && WORD_CHAR.test(s[j-1])) {
+      while (j < s.length && WORD_CHAR.test(s[j])) j++;
+      text = text + s.slice(range.endOffset, j);
+    }
+  }
+  return text;
+}
+
 const ABBREVIATIONS = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St)\.$/;
 function findSentence(fullText, selectedText){
   const index = fullText.indexOf(selectedText);
@@ -96,7 +124,7 @@ window.addEventListener(
     if (!e.altKey) return;
 
     let selection = window.getSelection();
-    let selectedText = selection ? selection.toString().replace(/\s+/g, ' ').trim() : "";
+    let selectedText = expandToWords(selection).replace(/\s+/g, ' ').trim();
 
     const surroundingText = getSurroundingText(selection);
     let context = surroundingText ? findSentence(surroundingText, selectedText) : null;
