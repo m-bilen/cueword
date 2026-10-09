@@ -93,10 +93,26 @@ function expandToWords(selection){
   return text;
 }
 
+function cleanSubtitleText(text){
+  return text
+  .replace(/\[[^\]]*\]/g, ' ')
+  .replace(/[♪♫]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+}
+
+function trimPunctuation(text){
+  return text
+  .replace(/^[^\p{L}\p{N}]+/u, '')
+  .replace(/[^\p{L}\p{N}.?!…'’]+$/u, '');
+
+}
+
 const ABBREVIATIONS = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St)\.$/;
 function findSentence(fullText, selectedText){
   const index = fullText.indexOf(selectedText);
-  if(!index === -1) return null;
+  if(index === -1) return null;
   const segmenter = new Intl.Segmenter(undefined, {granularity: 'sentence'});
   const parts = [...segmenter.segment(fullText)];
   const i = parts.findIndex(part => index >= part.index && index < part.index + part.segment.length);
@@ -124,10 +140,10 @@ window.addEventListener(
     if (!e.altKey) return;
 
     let selection = window.getSelection();
-    let selectedText = expandToWords(selection).replace(/\s+/g, ' ').trim();
+    let selectedText = trimPunctuation(cleanSubtitleText(expandToWords(selection)));
 
     const surroundingText = getSurroundingText(selection);
-    let context = surroundingText ? findSentence(surroundingText, selectedText) : null;
+    let context = surroundingText ? findSentence(cleanSubtitleText(surroundingText), selectedText) : null;
     if (context && selectedText.length >= context.length * 0.8) context = null;
 
     if (selectedText.length > 0 && selectedText.length < 300) {
