@@ -1,3 +1,4 @@
+
 import {getApiKey, getTargetLanguage} from './storage.js';
 const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
@@ -63,7 +64,13 @@ async function requestGemini(apiKey, prompt, timeoutMs){
        throw new Error('NETWORK');
     }
     
-    if(res.status === 400 || res.status === 401 || res.status === 403) throw new Error('INVALID_KEY');
+    if(res.status === 400){
+        const body = await res.json().catch(() => null);
+        const keyInvalid = body?.error?.details?.some(d => d.reason === 'API_KEY_INVALID');
+        throw new Error(keyInvalid ? 'INVALID_KEY' : 'BAD_REQUEST');
+    }
+
+    if(res.status === 401 || res.status === 403) throw new Error('INVALID_KEY');
     if(res.status === 429) throw new Error('RATE_LIMITED');
     if(!res.ok) throw new Error('SERVER_ERROR');
     const data = await res.json();
