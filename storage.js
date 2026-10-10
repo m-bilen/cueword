@@ -2,8 +2,18 @@ export async function getThreads(){
     const result = await chrome.storage.local.get('threads');
     return result.threads ?? [];
 }
+let writeQueue = Promise.resolve();
+
+function enqueueWrite(task) {
+    const result = writeQueue.then(task);
+    writeQueue = result.catch(() => {});
+    return result;
+}
 
 export async function createThread(title){
+    return enqueueWrite(async () => {
+
+    
 const newThread = {
     id: crypto.randomUUID(),
     title: title,
@@ -13,6 +23,7 @@ const threads = await getThreads();
 threads.unshift(newThread);
 await chrome.storage.local.set({threads: threads});
 return newThread;
+});
 }
 
 async function getAllWords() {
@@ -27,6 +38,9 @@ export async function getWords(threadId) {
 }
 
 export async function addWord(threadId, text, analysis, context) {
+    return enqueueWrite(async () => {
+
+    
     const newWord = {
         id: crypto.randomUUID(),
         threadId: threadId,
@@ -39,6 +53,7 @@ export async function addWord(threadId, text, analysis, context) {
     words.push(newWord);
     await chrome.storage.local.set({words: words});
     return newWord;
+    });
 }
 
 export async function getApiKey() {
@@ -61,27 +76,39 @@ export async function saveTargetLanguage(language){
 }
 
 export async function deleteThread(threadId){
+    return enqueueWrite(async () => {
+
+   
     const threads = await getThreads();
     const words = await getAllWords();
     await chrome.storage.local.set({
         threads: threads.filter(thread => thread.id !== threadId),
         words: words.filter(word => word.threadId !==threadId)
     });
+     });
 }
 
 export async function deleteWord(wordId){
+    return enqueueWrite(async () => {
+
+   
     const words = await getAllWords();
     await chrome.storage.local.set({ words: words.filter(word => word.id !== wordId) });
+     });
     
 }
 
 export async function renameThread(threadId, newTitle){
+    return enqueueWrite(async () => {
+
+    
     const threads = await getThreads();
     const thread = threads.find(t => t.id === threadId);
     if (!thread)  return;
     
     thread.title = newTitle;
     await chrome.storage.local.set({threads: threads});
+    });
 
 }
 
