@@ -117,6 +117,19 @@ function trimPunctuation(text){
 
 }
 
+function normalizeCase(text){
+  const letters = text.replace(/[^\p{L}]/gu, '');
+  if (letters.length <= 4) return text;
+  if (letters !== letters.toUpperCase()) return text;
+
+  let result = text.toLowerCase();
+  if (result.includes(' ')) {
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    result = result.replace(/\bi\b/g, 'I');
+  }
+  return result;
+}
+
 const ABBREVIATIONS = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St)\.$/;
 function findSentence(fullText, selectedText){
   const index = fullText.indexOf(selectedText);
@@ -156,7 +169,7 @@ window.addEventListener(
 
     if (selectedText.length > 0 && selectedText.length < 300) {
       if (!chrome.runtime?.id) return;
-      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: selectedText , context: context}).catch(() => {});
+      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: normalizeCase(selectedText), context: context}).catch(() => {});
     }
     
   },
