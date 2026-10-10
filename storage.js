@@ -37,7 +37,7 @@ export async function getWords(threadId) {
     return words.filter(word => word.threadId === threadId);
 }
 
-export async function addWord(threadId, text, analysis, context) {
+export async function addWord(threadId, text, analysis, context, source) {
     return enqueueWrite(async () => {
 
     
@@ -47,6 +47,8 @@ export async function addWord(threadId, text, analysis, context) {
         text: text,
         analysis: analysis, 
         context: context ?? null,
+        time: source?.time ?? null,
+        url: source?.url ?? null,
         createdAt: Date.now()
     };
     const words = await getAllWords();

@@ -9,7 +9,7 @@ chrome.storage.onChanged.addListener((changes) => {
     pauseOnSelect = changes.pauseOnSelect.newWalue;
   }
 });
-const SUBTITLE_CONTAINERS = '.jw-captions, .vjs-text-track-display, .vjs-text-track-cue, [class*= "subtitle"], .player-timedtext';
+const SUBTITLE_CONTAINERS = '.jw-captions, .vjs-text-track-display, .vjs-text-track-cue, [class*= "subtitle"], .player-timedtext, .caption-window';
 const TEXT_BLOCKS = 'p, li, td, blockquote, h1, h2, h3, h4, h5, h6';
 
 
@@ -169,7 +169,7 @@ window.addEventListener(
 
     if (selectedText.length > 0 && selectedText.length < 300) {
       if (!chrome.runtime?.id) return;
-      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: normalizeCase(selectedText), context: context}).catch(() => {});
+      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: normalizeCase(selectedText), context: context, time: getVideoTime(), url: location.href}).catch(() => {});
     }
     
   },
@@ -182,6 +182,19 @@ function pausevideos() {
   });
 }
 
+function getVideoTime(){
+  let best = null;
+  let bestArea = 0;
+  document.querySelectorAll("video").forEach((video) => {
+    const rect = video.getBoundingClientRect();
+    const area = rect.width * rect.height;
+    if (area > bestArea) {
+      best = video;
+      bestArea = area;
+    }
+  });
+  return best ? Math.floor(best.currentTime) : null;
+}
 
 function blockPageMouseEvents(e) {
   if (e.altKey && !isAltHeld) enableSelectMode();

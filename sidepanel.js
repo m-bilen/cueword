@@ -110,11 +110,11 @@ function scrollToBottom() {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "TEXT_SELECTED") {
-        analyzeText(message.text, message.context);
+        analyzeText(message.text, message.context, {time: message.time, url: message.url});
     }
 });
 
-async function analyzeText(text, context) {
+async function analyzeText(text, context, source) {
     const threadId = activeThreadId;
     const placeholder = chatContainer.querySelector('.placeholder');
     if (placeholder) placeholder.remove();
@@ -143,7 +143,7 @@ async function analyzeText(text, context) {
 
         try {
         const analysis = await analyze(text, context);
-       const newWord = await addWord(threadId, text, analysis, context);
+       const newWord = await addWord(threadId, text, analysis, context, source);
 
         loadingBubble.remove();
         if (activeThreadId === threadId){
