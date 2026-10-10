@@ -84,6 +84,7 @@ function appendChatBubble(text, analysis, wordId) {
     bubble.className = 'chat-bubble';
     
     const wordDiv = document.createElement('div');
+    wordDiv.lang = 'en';
     wordDiv.className = 'chat-word';
     wordDiv.innerText = text;
     if (isLine(text)) wordDiv.classList.add('is-line');
@@ -233,6 +234,7 @@ function renderThreads(threads){
         if(activeThreadId === thread.id) li.classList.add ('active');
         const titleSpan = document.createElement('span');
         titleSpan.textContent = thread.title;
+        titleSpan.title = thread.title;
         li.appendChild(titleSpan);
         li.appendChild(createIconButton('rename-btn ' ,'✎', t('rename'), () => handleRenameThread(thread) ));
         li.appendChild(createIconButton('delete-btn', '×', t('delete'),() => handleDeleteThread(thread) ));
