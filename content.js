@@ -21,25 +21,28 @@ function disableSelectMode() {
   isAltHeld = false;
 }
 
-window.addEventListener(
-  "keydown",
-  (e) => {
-    if (e.key === "Alt") {
-      isAltHeld = true;
-      dynamicStyle.innerHTML = `
-            /* Altyazı katmanını zorla en üste çek ve seçilebilir yap */
+function enableSelectMode(){
+  if (isAltHeld) return;
+  isAltHeld = true;
+  dynamicStyle.innerHTML = ` /* Altyazı katmanını zorla en üste çek ve seçilebilir yap */
             .jw-captions, .jw-wrapper, .vjs-text-track-display, .vjs-text-track-cue, [class*="caption"], [class*="subtitle"], [class*="player-timedtext"], .player-timedtext * {
                 pointer-events: auto !important;
                 user-select: text !important;
                 -webkit-user-select: text !important;
-                -webkit-user-drag: none !important!;
+                -webkit-user-drag: none !important;
                 z-index: 2147483647 !important;
             }
             /* Video oynatıcının tıklamaları yutmasını engelle */
             video, .jw-video, [data-uia = "player"]> * , .vjs-tech, .jw-controls, .jw-control-bar, .jw-overlay {
                 pointer-events: none !important;
-            }
-        `;
+            }`;
+}
+
+window.addEventListener(
+  "keydown",
+  (e) => {
+    if (e.key === "Alt") {
+      enableSelectMode();
     }
   },
   true,
@@ -54,6 +57,11 @@ window.addEventListener(
   },
   true,
 );
+
+window.addEventListener("mousemove", (e) => {
+  if (e.altKey && !isAltHeld) enableSelectMode();
+  else if(!e.altKey && isAltHeld) disableSelectMode();
+}, true);
 
 window.addEventListener("blur", disableSelectMode);
 
@@ -163,6 +171,7 @@ function pausevideos() {
 
 
 function blockPageMouseEvents(e) {
+  if (e.altKey && !isAltHeld) enableSelectMode();
   if (!isAltHeld) return;
   if (e.type === "mousedown" && pauseOnSelect) pausevideos();
   e.stopImmediatePropagation();
