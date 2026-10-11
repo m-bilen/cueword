@@ -181,6 +181,8 @@ function isLine(text){
     return text.trim().split(/\s+/).length >=4;
 }
 
+// TODO: Use parseAnalysis from analysis.js instead of parsing lines here,
+// so the analysis format is read in one place only.
 function renderAnalysis(container,analysis,word) {
     const lines = analysis.split('\n').map(line => line.trim()).filter(line => line !== '');
 
