@@ -4,11 +4,6 @@ function stripMarkdown(text) {
   return text.replace(/\*+/g, '').trim();
 }
 
-function firstSentence(text) {
-  const match = text.match(/^.*?[.!?](\s|$)/);
-  return match ? match[0].trim() : text;
-}
-
 export function parseAnalysis(text) {
   const result = { basic: '', contextual: null, usages: [] };
   const lines = text.split('\n').map(line => line.trim()).filter(Boolean);

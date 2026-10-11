@@ -1,3 +1,4 @@
+import { openReview, closeReview, getDueWords } from './review.js';
 import { t, applyTranslations} from './i18n.js';
 import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread,getThreadsCollapsed, saveThreadsCollapsed} from './storage.js';
 import { analyze } from './ai.js'
@@ -8,6 +9,9 @@ const currentThreadTitle = document.getElementById('currentThreadTitle');
 const currentThreadCount = document.getElementById('currentThreadCount');
 const settingsBtn = document.getElementById('settingsBtn');
 const toggleThreadsBtn = document.getElementById('toggleThreadsBtn');
+const reviewBtn = document.getElementById('reviewBtn');
+const reviewCount = document.getElementById('reviewCount');
+const reviewClose = document.getElementById('reviewClose');
 
 
 let activeThreadId = null;
@@ -220,11 +224,13 @@ function renderAnalysis(container,analysis,word) {
     });
 }
 
-function updateHeader(){
+async function updateHeader(){
     const thread = allThreads.find(item => item.id === activeThreadId);
     const count = chatContainer.querySelectorAll('.chat-bubble:not(.is-loading)').length;
     currentThreadTitle.textContent = thread ? thread.title : '';
     currentThreadCount.textContent = thread ? t('wordCount', [String(count)]) : '';
+    const due = await getDueWords(activeThreadId);
+    reviewCount.textContent = due.length || '';
 }
 
 
@@ -242,9 +248,10 @@ function renderThreads(threads){
         li.appendChild(createIconButton('delete-btn', '×', t('delete'),() => handleDeleteThread(thread) ));
         li.addEventListener('click' , () => selectThread(thread.id));
         threadList.appendChild(li);
-        updateHeader();
+        
 
     });
+    updateHeader();
 }
 
 async function handleDeleteThread(thread){
@@ -267,6 +274,11 @@ settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
 toggleThreadsBtn.addEventListener('click', async () => {
     const collapsed = document.body.classList.toggle('threads-collapsed');
     await saveThreadsCollapsed(collapsed);
+    reviewBtn.addEventListener('click', () => openReview(activeThreadId));
+reviewClose.addEventListener('click', () => {
+  closeReview();
+  updateHeader();
+});
 
 });
 if (await getThreadsCollapsed()) document.body.classList.add('threads-collapsed');

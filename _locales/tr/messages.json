@@ -43,5 +43,9 @@
   "saved": { "message": "Kaydedildi." },
   "pauseOnSelectLabel": {
   "message": "Seçime başlayınca videoyu durdur"
-}
+},
+ "review": { "message": "Tekrar"},
+ "scopeThread": {"message": "Bu başlık"},
+ "scopeAll": {"message": "Tümü"},
+  "close": { "message": "Kapat"}
 }

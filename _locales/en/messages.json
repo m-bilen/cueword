@@ -43,5 +43,9 @@
   "saved": { "message": "Saved." },
   "pauseOnSelectLabel": {
     "message": "Pause the video when I start selecting."
-  }
+  },
+  "review": { "message": "Review"},
+  "scopeThread": {"message": "This title" },
+  "scopeAll": {"message": "All"},
+  "close": { "message": "Close"}
 }
