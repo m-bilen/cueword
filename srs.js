@@ -1,4 +1,4 @@
-const DAY = 24 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
 export const DEFAULT_SRS = { reps: 0, interval: 0, ease: 2.5, due: 0};
 export function getSrs(word) {
     return { ...DEFAULT_SRS, ...word.srs };

@@ -26,7 +26,7 @@ return newThread;
 });
 }
 
-async function getAllWords() {
+export async function getAllWords() {
     const result = await chrome.storage.local.get('words');
     return result.words ?? [];
 
@@ -98,6 +98,16 @@ export async function deleteWord(wordId){
     await chrome.storage.local.set({ words: words.filter(word => word.id !== wordId) });
      });
     
+}
+
+export async function updateWordSrs(wordId, srs){
+    return enqueueWrite(async () => {
+        const words = await getAllWords();
+        const word = words.find(w => w.id === wordId);
+        if (!word) return;
+        word.srs = srs;
+        await chrome.storage.local.set({ words });
+    });
 }
 
 export async function renameThread(threadId, newTitle){
