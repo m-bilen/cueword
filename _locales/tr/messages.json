@@ -47,5 +47,7 @@
  "review": { "message": "Tekrar"},
  "scopeThread": {"message": "Bu başlık"},
  "scopeAll": {"message": "Tümü"},
-  "close": { "message": "Kapat"}
+  "close": { "message": "Kapat"},
+  "reviewPrompt": {"message": "Bu sahnede ne demek?"},
+  "reviewEmpty": {"message": "Şu an tekrar edilecek kelime yok."}
 }

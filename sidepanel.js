@@ -274,13 +274,14 @@ settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
 toggleThreadsBtn.addEventListener('click', async () => {
     const collapsed = document.body.classList.toggle('threads-collapsed');
     await saveThreadsCollapsed(collapsed);
-    reviewBtn.addEventListener('click', () => openReview(activeThreadId));
+});
+
+reviewBtn.addEventListener('click', () => openReview(activeThreadId));
 reviewClose.addEventListener('click', () => {
   closeReview();
   updateHeader();
 });
 
-});
 if (await getThreadsCollapsed()) document.body.classList.add('threads-collapsed');
 
 applyTranslations();

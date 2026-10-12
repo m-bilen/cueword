@@ -47,5 +47,7 @@
   "review": { "message": "Review"},
   "scopeThread": {"message": "This title" },
   "scopeAll": {"message": "All"},
-  "close": { "message": "Close"}
+  "close": { "message": "Close"},
+  "reviewPrompt": {"message": "What does it mean here? "},
+  "reviewEmpty": {"message": "Nothing to review right now."}
 }
