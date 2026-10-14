@@ -276,8 +276,8 @@ async function handleDeleteThread(thread){
 }
 
 async function handleRenameThread(thread) {
-    const newTitle = prompt(t('renamePrompt'));
-    if (!newTitle || newTitle.trim() === '') return;
+    const newTitle = prompt(t('renamePrompt'), thread.title);
+    if (!newTitle || newTitle.trim() === '' || newTitle.trim() === thread.title) return;
     await renameThread(thread.id, newTitle.trim());
     await loadThreads();
 }
