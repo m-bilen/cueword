@@ -26,6 +26,7 @@ const ERROR_MESSAGE_KEYS = {
     TIMEOUT: 'errorServer'
 
 };
+const MIN_WORD_SIZE = 15;
 
 async function loadThreads() {
     try {
@@ -105,6 +106,7 @@ function appendChatBubble(text, analysis, wordId) {
     }));
     bubble.appendChild(analysisDiv);
     chatContainer.appendChild(bubble);
+    fitWord(wordDiv);
     updateHeader();
 }
 
@@ -142,6 +144,7 @@ async function analyzeText(text, context, source) {
     loadingBubble.appendChild(loadingWord);
     loadingBubble.appendChild(loadingText);
     chatContainer.appendChild(loadingBubble);
+    fitWord(loadingWord);
     scrollToBottom();
 
         try {
@@ -182,6 +185,16 @@ function createIconButton(className, symbol, title, onClick){
 
 function isLine(text){
     return text.trim().split(/\s+/).length >=4;
+}
+
+function fitWord(element){
+    element.style.overflowWrap = 'normal';
+    let size = parseFloat(getComputedStyle(element).fontSize);
+    while (element.scrollWidth > element.clientWidth && size > MIN_WORD_SIZE){
+        size -= 1;
+        element.style.fontSize = `${size}px`;
+    }
+    element.style.overflowWrap = '';
 }
 
 // TODO: Use parseAnalysis from analysis.js instead of parsing lines here,
