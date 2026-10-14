@@ -1,5 +1,5 @@
-import { getWords, getAllWords} from './storage.js';
-import { isDue } from './srs.js';
+import { getWords, getAllWords, updateWordSrs, getThreads} from './storage.js';
+import { isDue, getSrs, review, qualityFromAnswer } from './srs.js';
 import { parseAnalysis, shortMeaning} from './analysis.js'
 import { t } from './i18n.js'
 
@@ -27,9 +27,59 @@ function shuffle(array){
     const copy = [...array];
     for (let i = copy.length -1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j] = copy[j], copy[i]];
+        [copy[i], copy[j]] = [copy[j], copy[i]];
     }
     return copy;
+}
+
+function formatTime(seconds){
+    if (seconds == null) return null;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = String(seconds % 60).padStart(2, '0');
+    if ( h > 0) return `${h}:${String(m).padStart(2, '0')}:${s}`;
+    return `${m}:${s}`; 
+}
+
+function renderReveal(word){
+    const { basic, contextual } = parseAnalysis(word.analysis);
+    const reveal = document.createElement('div');
+    reveal.className = 'review-reveal';
+
+    if(contextual && basic !== contextual){
+        const basicLine = document.createElement('p');
+        basicLine.className = 'review-meaning';
+        basicLine.textContent = basic;
+        reveal.append(basicLine);
+    }
+
+    const title = session.titles.get(word.threadId);
+    const time = formatTime(word.time);
+    const parts = [title, time].filter(Boolean);
+    if (parts.length > 0){
+        const source = document.createElement('p');
+        source.className = 'review-source';
+        source.textContent = parts.join (' · ');
+        reveal.append(source);
+    }
+    stage.append(reveal);
+}
+
+function showMessage(text){
+    const p = document.createElement('p');
+    p.className = 'review-empty';
+    p.textContent = text;
+    stage.replaceChildren(p);
+}
+
+function goNext(){
+    session.index++;
+    if (session.index >= session.queue.length){
+        progress.textContent = '';
+        showMessage(t('reviewDone', [String(session.correct), String(session.total)]));
+        return;
+    }
+    renderQuestion();
 }
 
 async function startSession() {
@@ -37,18 +87,15 @@ async function startSession() {
     const pool = words.filter(isReviewable);
     const queue = shuffle(pool.filter( word => isDue(word))).slice(0, SESSION_SIZE);
     
-    if (queue.length === 0) {
-        session = null;
-        progress.textContent = '';
-        stage.innerHTML = '';
-        const empty = document.createElement('p');
-        empty.className = 'review-empty';
-        empty.textContent = t('reviewEmpty');
-        stage.appendChild(empty);
-        return ;
-    }
+      if (queue.length === 0) {
+  session = null;
+  progress.textContent = '';
+  showMessage(t('reviewEmpty'));
+  return;
+}
     const meanings = new Map(pool.map(word => [word.id, shortMeaning(parseAnalysis(word.analysis))] ));
-    session = { pool, meanings, queue, index: 0};
+    const threads = await getThreads();
+    session = { pool, meanings, queue, index: 0, total: queue.length, correct: 0, retried: new Set(), titles: new Map(threads.map(t => [t.id, t.title])), };
     renderQuestion();
 }
 
@@ -80,6 +127,7 @@ function renderQuestion(){
     const word = session.queue[session.index];
     const { answer, options} = buildOptions(word);
     session.answer = answer;
+    session.answered = false;
 
     progress.textContent = `${session.index + 1} / ${session.queue.length}`;
     stage.innerHTML = '';
@@ -106,9 +154,50 @@ function renderQuestion(){
         button.type = 'button';
         button.className = 'review-option';
         button.textContent = option;
+        button.addEventListener('click', () => answerQuestion(button));
         list.appendChild(button);
     });
     stage.appendChild(list);
+    session.shownAt = Date.now();
+}
+
+async function answerQuestion(button){
+    if (session.answered) return;
+    session.answered = true;
+    
+    const word = session.queue[session.index];
+    const ms = Date.now() - session.shownAt;
+    const correct = button.textContent === session.answer;
+
+    stage.querySelectorAll('.review-option').forEach(option => {
+        option.disabled = true;
+        if (option.textContent === session.answer) option.classList.add('is-correct');
+
+    });
+    if (!correct) button.classList.add('is-wrong');
+
+       const firstTry = !session.retried.has(word.id);
+    if (firstTry) {
+        if (correct) {
+            session.correct += 1;
+        } else {
+            session.retried.add(word.id);
+            session.queue.push(word);
+        }
+    }
+
+    renderReveal(word);
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'review-continue';
+    next.textContent = t('reviewContinue');
+    next.addEventListener('click', goNext);
+    stage.append(next);
+    next.focus();
+
+    if (firstTry) {
+        await updateWordSrs(word.id, review(getSrs(word), qualityFromAnswer(correct, ms)));
+    }
 }
 
 function updateScopeButtons() {

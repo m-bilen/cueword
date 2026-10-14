@@ -49,5 +49,13 @@
   "scopeAll": {"message": "All"},
   "close": { "message": "Close"},
   "reviewPrompt": {"message": "What does it mean here? "},
-  "reviewEmpty": {"message": "Nothing to review right now."}
+  "reviewEmpty": {"message": "Nothing to review right now."},
+  "reviewContinue": { "message": "Continue"},
+  "reviewDone": {
+    "message": "You got $CORRECT$ of $TOTAL$ right on the first try.",
+    "placeholders": {
+      "correct": { "content": "$1" },
+      "total": { "content": "$2" }
+    }  
+  }
 }

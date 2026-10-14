@@ -13,7 +13,7 @@ export function applyTranslations(){
         element.title = text;
         element.setAttribute('aria-label', text);
     });
-    document.querySelectorAll('[data-i18n-placeholder').forEach(element =>{
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element =>{
         element.placeholder = t(element.dataset.i18nPlaceholder);
     });
 }

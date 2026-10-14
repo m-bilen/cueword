@@ -98,7 +98,7 @@ function appendChatBubble(text, analysis, wordId) {
     renderAnalysis(analysisDiv, analysis, text);
     
     bubble.appendChild(wordDiv);
-    bubble.appendChild(createIconButton('delete-btn', '×', 'Sil', async () => {
+    bubble.appendChild(createIconButton('delete-btn', '×', 'Delete', async () => {
         await deleteWord(wordId);
         bubble.remove();
         updateHeader();
@@ -125,7 +125,6 @@ async function analyzeText(text, context, source) {
 
 
     const loadingBubble = document.createElement('div');
-    loadingBubble.className = 'chat-bubble';
     loadingBubble.className = 'chat-bubble is-loading';
     const loadingWord = document.createElement('div');
     loadingWord.className = 'chat-word';
@@ -264,7 +263,7 @@ async function handleDeleteThread(thread){
 }
 
 async function handleRenameThread(thread) {
-    const newTitle = prompt(t('newThreadPrompt'));
+    const newTitle = prompt(t('renamePrompt'));
     if (!newTitle || newTitle.trim() === '') return;
     await renameThread(thread.id, newTitle.trim());
     await loadThreads();
@@ -282,6 +281,9 @@ reviewClose.addEventListener('click', () => {
   updateHeader();
 });
 
+chrome.storage.onChanged.addListener((changes) => {
+    if (changes.words) updateHeader();
+})
 if (await getThreadsCollapsed()) document.body.classList.add('threads-collapsed');
 
 applyTranslations();

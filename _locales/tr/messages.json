@@ -49,5 +49,13 @@
  "scopeAll": {"message": "Tümü"},
   "close": { "message": "Kapat"},
   "reviewPrompt": {"message": "Bu sahnede ne demek?"},
-  "reviewEmpty": {"message": "Şu an tekrar edilecek kelime yok."}
+  "reviewEmpty": {"message": "Şu an tekrar edilecek kelime yok."},
+  "reviewContinue": {"message": "Devam"},
+  "reviewDone": {
+    "message": "$TOTAL$ kelimeden $CORRECT$ tanesini ilk seferde bildin.",
+    "placeholders": {
+      "correct": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  }
 }
