@@ -20,13 +20,13 @@
     flex-direction: column;
     gap: 30px;
   }
-  h1 {
+  h1 { 
     margin: 0;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--line);
-    font-size: 28px;
-    font-weight: 600;
-  }
+    font-size: 26px;
+    font-weight: 600; 
+    color: var(--accent);
+   }
+
   .field {
     display: flex;
     flex-direction: column;
@@ -41,12 +41,13 @@
     background: var(--bg-raised);
     color: var(--text);
     border: 1px solid var(--line);
+    border-bottom: 2px solid var(--line);
     border-radius: var(--radius);
     font-size: 14px;
   }
   input:not([type = "checkbox"]):focus, select:focus {
     outline: none;
-    border-color: var(--accent);
+    border-bottom-color: var(--accent);
   }
   select {
     appearance: none;
@@ -57,8 +58,10 @@
   }
   .help {
     margin: 0;
-    font-size: 12.5px;
-    color: var(--text-muted);
+    font-family: var(--font-book); 
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
   }
   .help a { color: var(--text); }
   .help a:hover { color: #fff; }
