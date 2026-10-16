@@ -32,6 +32,7 @@
   "errorServer": { "message": "Gemini şu an yanıt vermiyor. Biraz sonra tekrar deneyin." },
   "errorEmptyAnswer": { "message": "Gemini boş bir cevap döndürdü. Tekrar deneyin." },
   "errorUnexpected": { "message": "Beklenmeyen bir hata oluştu." },
+  "errorTimeout": { "message": "Cevap gecikti. Bağlantınızı kontrol edip tekrar deneyin." },
 
   "settingsTitle": { "message": "Ayarlar" },
   "apiKeyLabel": { "message": "Gemini API key" },
@@ -57,5 +58,12 @@
       "correct": { "content": "$1" },
       "total": { "content": "$2" }
     }
-  }
+  },
+"onboardingTitle": { "message": "Başlamadan önce" },
+"onboardingIntro": { "message": "Cueword kelimeleri Gemini'ye sorarak açıklıyor. Bunun için ücretsiz bir anahtarın olması lazım, bir dakikanı alır." },
+"onboardingStep1": { "message": "Google AI Studio'da anahtarını oluştur." },
+"onboardingStep1Link": { "message": "Google AI Studio →" },
+"onboardingStep2": { "message": "Kopyala, ayarlara yapıştır." },
+"onboardingStep2Button": { "message": "Ayarlar" },
+"onboardingStep3": { "message": "Gerisi izlemek. Takıldığın kelimede Alt'a basılı tut ve seç. (Mac'te Option)" }
 }

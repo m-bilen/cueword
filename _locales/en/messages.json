@@ -32,6 +32,7 @@
   "errorServer": { "message": "Gemini is not responding right now. Try again later." },
   "errorEmptyAnswer": { "message": "Gemini returned an empty answer. Try again." },
   "errorUnexpected": { "message": "Something went wrong." },
+  "errorTimeout": { "message": "The answer took too long. Check your connection and try again." },
 
   "settingsTitle": { "message": "Settings" },
   "apiKeyLabel": { "message": "Gemini API key" },
@@ -56,6 +57,13 @@
     "placeholders": {
       "correct": { "content": "$1" },
       "total": { "content": "$2" }
-    }  
-  }
+    }
+  },
+"onboardingTitle": { "message": "Before you start" },
+"onboardingIntro": { "message": "Cueword explains words by asking Gemini. That needs a free API key. It takes a minute." },
+"onboardingStep1": { "message": "Create your key in Google AI Studio." },
+"onboardingStep1Link": { "message": "Google AI Studio →" },
+"onboardingStep2": { "message": "Copy it and paste it in the settings." },
+"onboardingStep2Button": { "message": "Settings" },
+"onboardingStep3": { "message": "Then just watch. When a word stops you, hold Alt and select it. (Option on Mac)" }
 }

@@ -89,7 +89,17 @@
 .review-continue:hover, .review-continue:focus-visible { border-color: var(--text-muted); }
 .review-continue { display: block; width: 100%; margin-top: 16px; padding: 10px; background: none; border: 1px solid rgba(255,255,255,0.15); color: inherit; font: inherit; cursor: pointer;}
 .review-continue:hover, .review-continue:focus-visible { border-color: rgba(255,255,255,0.35);}
-
+.onboarding { display: none; flex: 1; flex-direction: column; justify-content: center; width: 100%; max-width: 360px; margin: 0 auto; padding: 32px 24px; box-sizing: border-box; }
+.needs-key .topbar, .needs-key .layout, .needs-key .review-view { display: none; }
+.needs-key .onboarding { display: flex; }
+.onboarding h1 { margin: 0 0 12px; font-size: 26px; font-weight: 600; color: var(--accent); }
+.onboarding-intro { margin: 0 0 36px; font-family: var(--font-book); font-size: 16px; line-height: 1.55; color: var(--text-secondary); }
+.onboarding-steps { display: flex; flex-direction: column; gap: 28px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.onboarding-steps li { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding-left: 28px; counter-increment: step; }
+.onboarding-steps li::before { content: counter(step); position: absolute; top: 0; left: 0; font-size: 16px; font-weight: 600; line-height: 1.55; color: var(--accent); }
+.step-text { font-family: var(--font-book); font-size: 16px; line-height: 1.55; color: var(--text-meaning); }
+.step-action { margin-top: 12px; padding: 9px 16px; background: var(--bg-raised); border: 1px solid var(--line); border-bottom: 2px solid var(--line); border-radius: var(--radius); color: var(--text); font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; }
+.step-action:hover, .step-action:focus-visible { border-bottom-color: var(--accent); outline: none; }
   </style>
   
 </head>
@@ -116,6 +126,7 @@
       <ul class="history-list" id="threadList"></ul>
     </div>
     <div class="main-content">
+     
       <div class="chat-container" id="chatContainer">
         <p class="placeholder" data-i18n="emptyPanel"></p>
       </div>
@@ -132,6 +143,23 @@
       </div>
       <div id="reviewStage" class="review-stage"></div>
     </section>
+    <section id="onboarding" class="onboarding">
+  <h1 data-i18n="onboardingTitle"></h1>
+  <p class="onboarding-intro" data-i18n="onboardingIntro"></p>
+  <ol class="onboarding-steps">
+    <li>
+      <span class="step-text" data-i18n="onboardingStep1"></span>
+      <a class="step-action" href="https://aistudio.google.com/apikey" target="_blank" data-i18n="onboardingStep1Link"></a>
+    </li>
+    <li>
+      <span class="step-text" data-i18n="onboardingStep2"></span>
+      <button type="button" class="step-action" id="onboardingSettingsBtn" data-i18n="onboardingStep2Button"></button>
+    </li>
+    <li>
+      <span class="step-text" data-i18n="onboardingStep3"></span>
+    </li>
+  </ol>
+</section>
 
   <script type="module" src="sidepanel.js"></script>
 </body>
