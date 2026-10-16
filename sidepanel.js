@@ -167,6 +167,7 @@ async function analyzeText(text, context, source) {
         }
         loadingWord.textContent = t('errorTitle');
         loadingText.textContent = t(messageKey ?? 'errorUnexpected');
+        loadingBubble.appendChild(createIconButton('delete-btn', '×', t('delete'), () => loadingBubble.remove()));
         
     }
 }
