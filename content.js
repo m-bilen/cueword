@@ -6,7 +6,7 @@ chrome.storage.local.get('pauseOnSelect').then((result) => {
 });
 chrome.storage.onChanged.addListener((changes) => {
   if(changes.pauseOnSelect) {
-    pauseOnSelect = changes.pauseOnSelect.newWalue;
+    pauseOnSelect = changes.pauseOnSelect.newValue;
   }
 });
 const SUBTITLE_CONTAINERS = '.jw-captions, .vjs-text-track-display, .vjs-text-track-cue, [class*= "subtitle"], .player-timedtext, .caption-window';
@@ -24,7 +24,7 @@ function disableSelectMode() {
 function enableSelectMode(){
   if (isAltHeld) return;
   isAltHeld = true;
-  dynamicStyle.innerHTML = ` /* Altyazı katmanını zorla en üste çek ve seçilebilir yap */
+  dynamicStyle.innerHTML = ` /* Force the subtitle layer on top and make it selectable */
             .jw-captions, .jw-wrapper, .vjs-text-track-display, .vjs-text-track-cue, [class*="caption"], [class*="subtitle"], [class*="player-timedtext"], .player-timedtext * {
                 pointer-events: auto !important;
                 user-select: text !important;
@@ -32,7 +32,7 @@ function enableSelectMode(){
                 -webkit-user-drag: none !important;
                 z-index: 2147483647 !important;
             }
-            /* Video oynatıcının tıklamaları yutmasını engelle */
+            /*Stop the video player from swallowing clicks */
             video, .jw-video, [data-uia = "player"]> * , .vjs-tech, .jw-controls, .jw-control-bar, .jw-overlay {
                 pointer-events: none !important;
             }`;
@@ -111,16 +111,21 @@ function cleanSubtitleText(text){
 }
 
 function trimPunctuation(text){
-  return text
-  .replace(/^[^\p{L}\p{N}]+/u, '')
-  .replace(/[^\p{L}\p{N}.?!…'’]+$/u, '');
-
+ const trimmed = text
+    .replace(/^[^\p{L}\p{N}]+/u, '')
+    .replace(/[^\p{L}\p{N}.?!…'’]+$/u, '');
+  return trimmed.includes(' ') ? trimmed : trimmed.replace(/[.?!…]+$/u, '');
 }
 
-function normalizeCase(text){
+function isAllCaps(text){
+   const letters = text.replace(/[^\p{L}]/gu, '');
+  return letters.length > 0 && letters === letters.toUpperCase();
+}
+
+function normalizeCase(text, capsLine = false) {
   const letters = text.replace(/[^\p{L}]/gu, '');
-  if (letters.length <= 4) return text;
-  if (letters !== letters.toUpperCase()) return text;
+  if (!capsLine && letters.length <= 4) return text;
+  if (!isAllCaps(text)) return text;
 
   let result = text.toLowerCase();
   if (result.includes(' ')) {
@@ -169,7 +174,14 @@ window.addEventListener(
 
     if (selectedText.length > 0 && selectedText.length < 300) {
       if (!chrome.runtime?.id) return;
-      chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: normalizeCase(selectedText), context: context, time: getVideoTime(), url: location.href}).catch(() => {});
+      const capsLine = surroundingText ? isAllCaps(surroundingText) : false;
+   chrome.runtime.sendMessage({
+  type: "TEXT_SELECTED",
+  text: normalizeCase(selectedText, capsLine),
+  context: context ? normalizeCase(context, true) : null,
+  time: getVideoTime(),
+  url: location.href
+}).catch(() => {});
     }
     
   },
