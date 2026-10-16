@@ -1,6 +1,6 @@
-import { openReview, closeReview, getDueWords } from './review.js';
+import { openReview, closeReview, getBadgeCount } from './review.js';
 import { t, applyTranslations} from './i18n.js';
-import { getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread,getThreadsCollapsed, saveThreadsCollapsed} from './storage.js';
+import {getApiKey, getThreads, createThread, getWords, addWord, deleteThread, deleteWord, renameThread,getThreadsCollapsed, saveThreadsCollapsed} from './storage.js';
 import { analyze } from './ai.js'
 const threadList = document.getElementById('threadList');
 const chatContainer = document.getElementById('chatContainer');
@@ -12,6 +12,7 @@ const toggleThreadsBtn = document.getElementById('toggleThreadsBtn');
 const reviewBtn = document.getElementById('reviewBtn');
 const reviewCount = document.getElementById('reviewCount');
 const reviewClose = document.getElementById('reviewClose');
+const onboardingSettingsBtn = document.getElementById('onboardingSettingsBtn');
 
 
 let activeThreadId = null;
@@ -23,7 +24,7 @@ const ERROR_MESSAGE_KEYS = {
     NETWORK: 'errorNetwork',
     SERVER_ERROR: 'errorServer',
     EMPTY_ANSWER: 'errorEmptyAnswer',
-    TIMEOUT: 'errorServer'
+    TIMEOUT: 'errorTimeout'
 
 };
 const MIN_WORD_SIZE = 15;
@@ -160,9 +161,9 @@ async function analyzeText(text, context, source) {
     } catch (err) {
         const messageKey = ERROR_MESSAGE_KEYS[err.message];
         if (messageKey){
-            console.warn('Analysis Failed', err.message); 
+            console.warn('Analysis failed', err.message); 
         } else {
-            console.error('Analysis Failed', err);
+            console.error('Analysis failed', err);
         }
         loadingWord.textContent = t('errorTitle');
         loadingText.textContent = t(messageKey ?? 'errorUnexpected');
@@ -241,8 +242,12 @@ async function updateHeader(){
     const count = chatContainer.querySelectorAll('.chat-bubble:not(.is-loading)').length;
     currentThreadTitle.textContent = thread ? thread.title : '';
     currentThreadCount.textContent = thread ? t('wordCount', [String(count)]) : '';
-    const due = await getDueWords(activeThreadId);
-    reviewCount.textContent = due.length || '';
+    const badgeCount = await getBadgeCount(activeThreadId);
+    reviewCount.textContent = badgeCount || '';
+}
+
+async function updateonboarding(){
+    document.body.classList.toggle('needs-key', !(await getApiKey()));
 }
 
 
@@ -283,6 +288,7 @@ async function handleRenameThread(thread) {
 }
 
 settingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
+onboardingSettingsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
 toggleThreadsBtn.addEventListener('click', async () => {
     const collapsed = document.body.classList.toggle('threads-collapsed');
     await saveThreadsCollapsed(collapsed);
@@ -295,9 +301,11 @@ reviewClose.addEventListener('click', () => {
 });
 
 chrome.storage.onChanged.addListener((changes) => {
-    if (changes.words) updateHeader();
-})
+    if (changes.words || changes.reviewDay) updateHeader();
+    if (changes.geminiApiKey) updateonboarding();
+});
 if (await getThreadsCollapsed()) document.body.classList.add('threads-collapsed');
 
 applyTranslations();
+updateonboarding();
 loadThreads();

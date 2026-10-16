@@ -151,3 +151,20 @@ export async function getPauseOnSelect() {
 export async function savePauseOnSelect(enabled){
     await chrome.storage.local.set({ pauseOnSelect: enabled });
 }
+
+function today(){
+    const d = new Date();
+    return `${d.getFullYear()} -${String(d.getMonth() + 1).padStart(2, '0')} - ${String(d.getDate()).padStart(2,'0')}`;
+}
+
+export async function getReviewedToday(){
+    const { reviewDay } = await chrome.storage.local.get('reviewDay');
+    return reviewDay?.date === today() ? (reviewDay.count ?? 0) : 0;
+}
+
+export async function countReviewed() {
+    return enqueueWrite(async () => {
+        const count = await getReviewedToday();
+        await chrome.storage.local.set({ reviewDay: { date: today(), count: count + 1}});
+    });
+}

@@ -1,10 +1,11 @@
-import { getWords, getAllWords, updateWordSrs, getThreads} from './storage.js';
-import { isDue, getSrs, review, qualityFromAnswer } from './srs.js';
+import { getWords, getAllWords, updateWordSrs, getThreads, getReviewedToday, countReviewed} from './storage.js';
+import { isDue, getSrs, review, qualityFromAnswer, isNew } from './srs.js';
 import { parseAnalysis, shortMeaning} from './analysis.js'
 import { t } from './i18n.js'
 
 const MAX_WORDS_IN_CARD = 5;
 const SESSION_SIZE = 20;
+const DAILY_GOAL = 20;
 const stage = document.getElementById('reviewStage');
 const progress = document.getElementById('reviewProgress');
 const scopeButtons = document.querySelectorAll('.review-scope button');
@@ -20,7 +21,14 @@ export function isReviewable(word){
 
 export async function getDueWords(threadId){
     const words = threadId ? await getWords(threadId) : await getAllWords();
-    return words.filter( word => isReviewable(word) && isDue(word));
+    const due = words.filter(word => isReviewable(word) && isDue(word));
+   return [...shuffle(due.filter(word => !isNew(word))), ...shuffle(due.filter(isNew))];
+}
+
+export async function getBadgeCount(threadId){
+    const due = await getDueWords(threadId);
+    const left = Math.max(0, DAILY_GOAL - await getReviewedToday());
+    return Math.min(due.length, left);
 }
 
 function shuffle(array){
@@ -83,9 +91,9 @@ function goNext(){
 }
 
 async function startSession() {
-    const words = scope === 'thread' ? await getWords(currentThreadId) : await getAllWords();
-    const pool = words.filter(isReviewable);
-    const queue = shuffle(pool.filter( word => isDue(word))).slice(0, SESSION_SIZE);
+    const threadId = scope === 'thread' ? currentThreadId: null;
+    const pool = (await getAllWords()).filter(isReviewable);
+    const queue = shuffle((await getDueWords(threadId)).slice(0, SESSION_SIZE));
     
       if (queue.length === 0) {
   session = null;
@@ -177,7 +185,7 @@ async function answerQuestion(button){
     if (!correct) button.classList.add('is-wrong');
 
        const firstTry = !session.retried.has(word.id);
-    if (firstTry) {
+   if (firstTry) {
         if (correct) {
             session.correct += 1;
         } else {
@@ -196,9 +204,11 @@ async function answerQuestion(button){
     next.focus();
 
     if (firstTry) {
-        await updateWordSrs(word.id, review(getSrs(word), qualityFromAnswer(correct, ms)));
-    }
+    await updateWordSrs(word.id, review(getSrs(word), qualityFromAnswer(correct, ms)));
+    await countReviewed();
 }
+}
+
 
 function updateScopeButtons() {
     scopeButtons.forEach(button => {

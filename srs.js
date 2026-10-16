@@ -37,3 +37,7 @@ export function isDue(word, now = Date.now()) {
 export function isLearned(word){
     return getSrs(word).interval >= 21;
 }
+
+export function isNew(word){
+    return word.srs == null;
+}
