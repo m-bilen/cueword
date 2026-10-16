@@ -102,12 +102,10 @@ function appendChatBubble(text, analysis, wordId) {
     bubble.appendChild(createIconButton('delete-btn', '×', 'Delete', async () => {
         await deleteWord(wordId);
         bubble.remove();
-        updateHeader();
     }));
     bubble.appendChild(analysisDiv);
     chatContainer.appendChild(bubble);
     fitWord(wordDiv);
-    updateHeader();
 }
 
 function scrollToBottom() {
@@ -157,6 +155,7 @@ async function analyzeText(text, context, source) {
         
         appendChatBubble(text, analysis, newWord.id);
         scrollToBottom();
+        updateHeader();
         }
     } catch (err) {
         const messageKey = ERROR_MESSAGE_KEYS[err.message];
