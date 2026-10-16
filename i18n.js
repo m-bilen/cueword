@@ -4,6 +4,7 @@ export function t(key, substitutions){
 }
 
 export function applyTranslations(){
+    document.documentElement.lang = chrome.i18n.getUILanguage();
     document.querySelectorAll('[data-i18n]').forEach(element => {
         element.textContent = t(element.dataset.i18n);
 
