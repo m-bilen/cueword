@@ -69,17 +69,17 @@ export async function saveApiKey(key){
 
 const UI_LANGUAGES = {
     tr: 'Turkish', en: 'English', es: 'Spanish', de:'German', fr: 'French', pl: 'Polish',
-    it: 'Italian', pt: 'Portuguese', rus: 'Russian', ar: 'Arabic'
+    it: 'Italian', pt: 'Portuguese', ru: 'Russian', ar: 'Arabic'
 };
 
 function defaultLanguage(){
-    const code = chrome.i18n.getUIlanguage().split('-')[0];
+    const code = chrome.i18n.getUILanguage().split('-')[0];
     return UI_LANGUAGES[code] ?? 'English';
 }
 
 export async function getTargetLanguage(){
     const result = await chrome.storage.local.get('targetLanguage');
-    return result.targetLanguage ?? 'Turkish';
+    return result.targetLanguage ?? defaultLanguage();
 
 }
 
