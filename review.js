@@ -107,12 +107,19 @@ async function startSession() {
     renderQuestion();
 }
 
+function overlaps(a, b){
+    const x = ` ${a.toLowerCase()} `;
+    const y = ` ${b.toLowerCase()} `;
+    return x.includes(y) || y.includes(x);
+}
+
 function buildOptions(word){
     const answer = session.meanings.get(word.id);
     const used = new Set([answer]);
     const distractors = [];
     for ( const other of shuffle(session.pool)) {
         if (distractors.length === 3) break;
+        if (overlaps(other.text, word.text)) continue;
         const meaning = session.meanings.get(other.id);
         if (used.has(meaning)) continue;
         used.add(meaning);

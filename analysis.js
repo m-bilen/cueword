@@ -1,4 +1,5 @@
-const LEGACY_LABEL = /^[-•*]?\s*\*\*([^*:]+):\*\*\s*/;
+const LEGACY_LABEL = /^(?:[-•*]|\d+\.)?\s*\*\*([^*:]+):\*\*\s*/;
+const BOLD_HEADING = /^\*\*[^*]+\*\*$/;
 
 function stripMarkdown(text) {
   return text.replace(/\*+/g, '').trim();
@@ -7,13 +8,18 @@ function stripMarkdown(text) {
 export function parseAnalysis(text) {
   const result = { basic: '', contextual: null, usages: [] };
   const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+  let heading = null;
 
 for (const [index, line] of lines.entries()) {
+  if (index === 0 && BOLD_HEADING.test(line)){
+    heading = stripMarkdown(line);
+    continue;
+  }
     const labeled = line.match(LEGACY_LABEL);
     if (labeled) {
       const label = labeled[1].trim();
       const rest = stripMarkdown(line.slice(labeled[0].length));
-if ((/anlam/i.test(label) || index === 0) && !result.basic) {
+if ((/anlam|meaning/i.test(label) || index === 0) && !result.basic) {
         result.basic = rest;
       } else {
         result.usages.push({ term: label, meaning: rest });
@@ -22,7 +28,7 @@ if ((/anlam/i.test(label) || index === 0) && !result.basic) {
     }
 
     if (line.startsWith('→')) {
-      result.contextual = line.slice(1).trim();
+      result.contextual = stripMarkdown(line.slice(1));
     } else if (/^[-•*]\s/.test(line)) {
       const content = line.slice(2);
       const colon = content.indexOf(':');
@@ -35,17 +41,21 @@ if ((/anlam/i.test(label) || index === 0) && !result.basic) {
         result.usages.push({ term: null, meaning: content.trim() });
       }
     } else {
-      result.basic = result.basic ? result.basic + ' ' + line : line;
+      const clean = stripMarkdown(line);
+      result.basic = result.basic ? result.basic + ' ' + clean : clean;
     }
   }
+  if (!result.basic && heading) result.basic = heading;
   return result;
 }
 
 export function shortMeaning(parsed) {
-  return firstSentence(parsed.contextual ?? parsed.basic);
+  const full = parsed.contextual ?? parsed.basic;
+  const short = full.replace(/\s*\([^]*\)/g, '').trim();
+  return firstSentence(short || full);
 }
 
 function firstSentence(text) {
     const match = text.match(/^.*?[.!?;](\s|$)/);
-    return match ? match[0].replace(/;\s*$/, '').trim() : text;
+    return match ? match[0].replace(/[.;]\s*$/, '').trim() : text;
 }
