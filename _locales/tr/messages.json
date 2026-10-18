@@ -23,6 +23,7 @@
   "message": "$COUNT$ kelime",
   "placeholders": { "count": { "content": "$1" } }
 },
+"wordCountOne": {"message": "1 kelime"},
 
   "errorTitle": { "message": "Hata" },
   "errorNoApiKey": { "message": "API key girilmemiş. Eklenti ayarlarından ekleyin." },

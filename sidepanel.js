@@ -241,7 +241,8 @@ async function updateHeader(){
     const thread = allThreads.find(item => item.id === activeThreadId);
     const count = chatContainer.querySelectorAll('.chat-bubble:not(.is-loading)').length;
     currentThreadTitle.textContent = thread ? thread.title : '';
-    currentThreadCount.textContent = thread ? t('wordCount', [String(count)]) : '';
+    const label = count === 1 ? t('wordCountOne') : t('wordCount', [String(count)]);
+    currentThreadCount.textContent = thread ? label : '';
     const badgeCount = await getBadgeCount(activeThreadId);
     reviewCount.textContent = badgeCount || '';
 }

@@ -23,6 +23,7 @@
     "message": "$COUNT$ words",
     "placeholders": {"count": {"content": "$1"}}
   },
+  "wordCountOne": {"message": "1 word"},
 
   "errorTitle": { "message": "Error" },
   "errorNoApiKey": { "message": "No API key set. Add one in the extension settings." },
