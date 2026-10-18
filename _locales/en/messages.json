@@ -44,13 +44,13 @@
   "save": { "message": "Save" },
   "saved": { "message": "Saved." },
   "pauseOnSelectLabel": {
-    "message": "Pause the video when I start selecting."
+    "message": "Pause the video when I start selecting"
   },
   "review": { "message": "Review"},
   "scopeThread": {"message": "This title" },
   "scopeAll": {"message": "All"},
   "close": { "message": "Close"},
-  "reviewPrompt": {"message": "What does it mean here? "},
+  "reviewPrompt": {"message": "What does it mean here?"},
   "reviewEmpty": {"message": "Nothing to review right now."},
   "reviewContinue": { "message": "Continue"},
   "reviewDone": {

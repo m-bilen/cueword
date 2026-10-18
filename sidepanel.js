@@ -41,7 +41,7 @@ async function loadThreads() {
         } else if (!activeThreadId) {
             selectThread(threads[0].id);
         }
-    } catch (err) { console.error("Başlıklar yüklenemedi", err); }
+    } catch (err) { console.error("Could not load sessions", err); }
 }
 
 
@@ -64,7 +64,7 @@ async function selectThread(threadId) {
         }
         
         renderThreads(allThreads);
-    } catch (err) { console.error("Kelimeler çekilemedi", err); }
+    } catch (err) { console.error("Could not load words", err); }
 }
 
 
@@ -82,7 +82,7 @@ async function createNewThread(title) {
         activeThreadId = newThread.id;
         await loadThreads();
         selectThread(newThread.id);
-    } catch (err) { console.error("Başlık oluşturulamadı", err); }
+    } catch (err) { console.error("Could not create session", err); }
 }
 
 function appendChatBubble(text, analysis, wordId) {
@@ -100,7 +100,7 @@ function appendChatBubble(text, analysis, wordId) {
     renderAnalysis(analysisDiv, analysis, text);
     
     bubble.appendChild(wordDiv);
-    bubble.appendChild(createIconButton('delete-btn', '×', 'Delete', async () => {
+    bubble.appendChild(createIconButton('delete-btn', '×', t('delete'), async () => {
         await deleteWord(wordId);
         bubble.remove();
     }));
