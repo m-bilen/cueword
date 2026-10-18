@@ -8,9 +8,10 @@ const RETRY_DELAY_MS = 1000;
 function buildPrompt(text, context, targetLanguage){
     const contextPart = context
     ? `It appears in this sentence: "${context}"
+First work out what the selected text means in THIS sentence. Film and TV dialogue is full of idioms, phrasal verbs and slang, so check whether the selection is part of one before you use the dictionary meaning. Example: in "You killed it out there!", "killed" means did very well, not murdered.
 Because a sentence is given, use this format instead of the formats below:
 <selected text>: <its basic dictionary meaning in a few words>
-→ <its meaning in THIS sentence, only if it differs from the basic meaning>
+→ <its meaning in THIS sentence. Write this line whenever the meaning here differs from the basic meaning, even slightly.>
 - <its most common phrasal verb, idiom or usage>: <meaning in a few words>
 Do not translate the whole sentence.`
     : '';
