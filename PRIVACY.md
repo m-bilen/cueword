@@ -7,8 +7,8 @@ Cueword is a Chrome extension that explains words you select in subtitles and he
 
 ## The short version
 
-- Your words, notes and settings stay in your browser.
-- The only thing that leaves your browser is the text you select, sent to Google Gemini with your own API key.
+- Your words, their explanations and your settings stay in your browser.
+- The only things that leave your browser are the text you select and the subtitle sentence around it, sent to Google Gemini with your own API key.
 - The developer never receives any of your data. There is no server, no account, no analytics and no tracking.
 - Cueword does not sell your data, and does not share it with anyone except Google's Gemini API as described below.
 
@@ -27,7 +27,7 @@ Your API key is stored as plain text in this local storage, like the rest of you
 
 ## What Cueword sends, and to whom
 
-When you select a word, Cueword sends the selected text and the subtitle sentence around it to the Google Gemini API over an encrypted (HTTPS) connection, using your own API key. Nothing else is sent: not the page address, not the timestamp, not your other words.
+When you select a word, Cueword sends the selected text and the subtitle sentence around it to the Google Gemini API over an encrypted (HTTPS) connection, using your own API key. The request also says which language to explain in. Nothing else is sent: not the page address, not the timestamp, not your other words.
 
 Google handles this request under its own terms: the [Gemini API Additional Terms of Service](https://ai.google.dev/gemini-api/terms) and the [Google Privacy Policy](https://policies.google.com/privacy). If you use a free (unpaid) API key, Google's terms allow it to use the content you send to improve its products, and human reviewers may read it. With a paid key, Google says it does not use your content this way. Cueword only sends text you selected yourself, but avoid selecting personal or sensitive text.
 

@@ -8,8 +8,8 @@ Cueword, altyazıda seçtiğin kelimeleri açıklayan ve onları tekrar etmene y
 
 ## Kısaca
 
-- Kelimelerin, notların ve ayarların senin tarayıcında kalır.
-- Tarayıcından çıkan tek şey seçtiğin metindir. O da senin kendi API key'inle Google Gemini'ye gönderilir.
+- Kelimelerin, açıklamaları ve ayarların senin tarayıcında kalır.
+- Tarayıcından çıkan tek şey seçtiğin metin ve etrafındaki altyazı cümlesidir. Bunlar da senin kendi API key'inle Google Gemini'ye gönderilir.
 - Geliştirici hiçbir verine erişmez. Sunucu yok, hesap yok, analitik yok, takip yok.
 - Cueword verilerini satmaz ve aşağıda anlatıldığı gibi Google'ın Gemini API'si dışında kimseyle paylaşmaz.
 
@@ -28,7 +28,7 @@ API key'in, diğer ayarların gibi bu yerel depolamada düz metin olarak saklan�
 
 ## Cueword neyi, kime gönderir
 
-Bir kelime seçtiğinde Cueword, seçtiğin metni ve etrafındaki altyazı cümlesini şifreli (HTTPS) bir bağlantı üzerinden, senin kendi API key'inle Google Gemini API'sine gönderir. Başka hiçbir şey gönderilmez: sayfa adresi, video zamanı ya da diğer kelimelerin gitmez.
+Bir kelime seçtiğinde Cueword, seçtiğin metni ve etrafındaki altyazı cümlesini şifreli (HTTPS) bir bağlantı üzerinden, senin kendi API key'inle Google Gemini API'sine gönderir. İstekte ayrıca açıklamanın hangi dilde yazılacağı belirtilir. Başka hiçbir şey gönderilmez: sayfa adresi, video zamanı ya da diğer kelimelerin gitmez.
 
 Google bu isteği kendi şartlarına göre işler: [Gemini API Ek Hizmet Şartları](https://ai.google.dev/gemini-api/terms) ve [Google Gizlilik Politikası](https://policies.google.com/privacy). Ücretsiz bir API key kullanıyorsan, Google'ın şartları gönderdiğin içeriği ürünlerini geliştirmek için kullanmasına izin verir ve bu içeriği insan değerlendiriciler okuyabilir. Ücretli bir key'de Google içeriğini bu şekilde kullanmadığını belirtir. Cueword yalnızca senin seçtiğin metni gönderir, yine de kişisel ya da hassas metinleri seçmekten kaçın.
 
