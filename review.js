@@ -117,13 +117,15 @@ function buildOptions(word){
     const answer = session.meanings.get(word.id);
     const used = new Set([answer]);
     const distractors = [];
+    const usedTexts = [word.text];
     for ( const other of shuffle(session.pool)) {
         if (distractors.length === 3) break;
-        if (overlaps(other.text, word.text)) continue;
+        if (usedTexts.some(text => overlaps(text, other.text))) continue;
         const meaning = session.meanings.get(other.id);
         if (used.has(meaning)) continue;
         used.add(meaning);
         distractors.push(meaning);
+        usedTexts.push(other.text);
     }
     return { answer, options: shuffle([answer, ...distractors])};
 }

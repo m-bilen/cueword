@@ -114,7 +114,8 @@ function trimPunctuation(text){
  const trimmed = text
     .replace(/^[^\p{L}\p{N}]+/u, '')
     .replace(/[^\p{L}\p{N}.?!…'’]+$/u, '');
-  return trimmed.split(/\s+/).length >= 4 ? trimmed : trimmed.replace(/[.?!…]+$/u, '');
+  return trimmed.includes(' ') ? trimmed : trimmed.replace(/[.?!…]+$/u, '');
+}
 
 async function detectLang(text){
   try{
