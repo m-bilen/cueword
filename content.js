@@ -117,20 +117,40 @@ function trimPunctuation(text){
   return trimmed.includes(' ') ? trimmed : trimmed.replace(/[.?!…]+$/u, '');
 }
 
+async function detectLang(text){
+  try{
+    const { languages } = await chrome.i18n.detectLanguage(text);
+    return languages[0]?.language ?? null;
+  } catch{
+    return null;
+  }
+}
+
+const DOTTED_I_LANGS = ['tr', 'az'];
+
+function lower(text, lang){
+  return DOTTED_I_LANGS.includes(lang) ? text.toLocaleLowerCase(lang) : text.toLowerCase();
+}
+
+function upper(text, lang){
+  return DOTTED_I_LANGS.includes(lang) ? text.toLocaleUpperCase(lang) : text.toUpperCase();
+}
+
+
 function isAllCaps(text){
    const letters = text.replace(/[^\p{L}]/gu, '');
   return letters.length > 0 && letters === letters.toUpperCase();
 }
 
-function normalizeCase(text, capsLine = false) {
+function normalizeCase(text, capsLine = false, lang = null) {
   const letters = text.replace(/[^\p{L}]/gu, '');
   if (!capsLine && letters.length <= 4) return text;
   if (!isAllCaps(text)) return text;
 
-  let result = text.toLowerCase();
+  let result = lower(text, lang);
   if (result.includes(' ')) {
-    result = result.charAt(0).toUpperCase() + result.slice(1);
-    result = result.replace(/\bi\b/g, 'I');
+    result = upper(result.charAt(0), lang) + result.slice(1);
+    if (!lang || lang === 'en') result = result.replace(/\bi\b/g, 'I');
   }
   return result;
 }
@@ -162,7 +182,7 @@ function findSentence(fullText, selectedText){
 
 window.addEventListener(
   "mouseup",
-  (e) => {
+  async (e) => {
     if (!e.altKey) return;
 
     let selection = window.getSelection();
@@ -172,16 +192,18 @@ window.addEventListener(
     let context = surroundingText ? findSentence(cleanSubtitleText(surroundingText), selectedText) : null;
     if (context && selectedText.length >= context.length * 0.8) context = null;
 
-    if (selectedText.length > 0 && selectedText.length < 300) {
-      if (!chrome.runtime?.id) return;
+        if (selectedText.length > 0 && selectedText.length < 300) {
       const capsLine = surroundingText ? isAllCaps(surroundingText) : false;
-   chrome.runtime.sendMessage({
-  type: "TEXT_SELECTED",
-  text: normalizeCase(selectedText, capsLine),
-  context: context ? normalizeCase(context, true) : null,
-  time: getVideoTime(),
-  url: location.href
-}).catch(() => {});
+      const time = getVideoTime();
+      const lang = await detectLang(context ?? selectedText);
+      if (!chrome.runtime?.id) return;
+      chrome.runtime.sendMessage({
+        type: "TEXT_SELECTED",
+        text: normalizeCase(selectedText, capsLine, lang),
+        context: context ? normalizeCase(context, true, lang) : null,
+        time,
+        url: location.href
+      }).catch(() => {});
     }
     
   },
