@@ -9,6 +9,7 @@
   },
   "name": "__MSG_extName__",
   "version": "1.0",
+  "minimum_chrome_version": "116",
   "description": "__MSG_extDescription__",
   "permissions": [
     "sidePanel",
