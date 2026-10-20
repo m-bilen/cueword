@@ -183,7 +183,7 @@ function findSentence(fullText, selectedText){
 window.addEventListener(
   "mouseup",
   async (e) => {
-    if (!e.altKey) return;
+        if (!e.isTrusted || !e.altKey) return;
 
     let selection = window.getSelection();
     let selectedText = trimPunctuation(cleanSubtitleText(expandToWords(selection)));

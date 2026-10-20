@@ -8,7 +8,7 @@
     "128":"icons/icon128.png"
   },
   "name": "__MSG_extName__",
-  "version": "1.0",
+  "version": "1.0.1",
   "minimum_chrome_version": "116",
   "description": "__MSG_extDescription__",
   "permissions": [
