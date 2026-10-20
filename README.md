@@ -15,7 +15,7 @@ It works with languages that separate words with spaces (tested with English, Ru
 
 ## Getting started
 
-1. Install Cueword from the Chrome Web Store *(link coming soon)*, or load it from source (see below).
+1. Install Cueword from the Chrome Web Store https://chromewebstore.google.com/detail/odfkanmemdikbdihblfnccagifgajpia?utm_source=item-share-cb, or load it from source (see below).
 2. Get a free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey): sign in with your Google account and click **Create API key**. It's free, needs no credit card and takes about a minute. Paste it in Cueword's settings.
 3. Play something with subtitles, hold **Alt** (**Option** on Mac) and select a word.
 
